@@ -5,7 +5,7 @@ import './App.css';
 import Clues from './Clues';
 import Grid from './Grid';
 import { CluesData } from './types';
-import { reducer, getLayout, getActiveSquare } from './crossword.utils';
+import { reducer, getLayout, getActiveSquare } from './crosswordState';
 
 type CrosswordProps = {
   clues: CluesData;
