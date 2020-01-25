@@ -3,8 +3,8 @@ import memoizeOne from 'memoize-one';
 import { Active, Square, CluesData, State, Action } from './types';
 
 export const getLayout = memoizeOne(
-  ({ width, height, across, down }: CluesData): (number | string)[][] => {
-    const layout = [];
+  ({ width, height, across, down }: CluesData): (number | boolean)[][] => {
+    const layout: (number | boolean)[][] = [];
     for (let i = 0; i < height; i++) {
       layout[i] = [];
       for (let j = 0; j < width; j++) {
@@ -58,7 +58,7 @@ function getDownActive(clues: CluesData, i: number, j: number): Active {
   return null;
 }
 
-function getNextActiveChar(clues: CluesData, active: Active): Active {
+function getNextActiveChar(clues: CluesData, active: Active & {}): Active {
   const { char, clueNumber, direction } = active;
   const clue = clues[direction].byNumber[clueNumber];
   const nextActive: Active = {
@@ -72,7 +72,7 @@ function getNextActiveChar(clues: CluesData, active: Active): Active {
   return getNextActiveClue(clues, active);
 }
 
-function getNextActiveClue(clues: CluesData, active: Active): Active {
+function getNextActiveClue(clues: CluesData, active: Active & {}): Active {
   const { clueNumber, direction } = active;
   const clueIndex = clues[direction].order.indexOf(clueNumber) + 1;
   const nextActive: Active = {
@@ -93,7 +93,7 @@ function getNextActiveClue(clues: CluesData, active: Active): Active {
   return null;
 }
 
-function getLastActiveChar(clues: CluesData, active: Active): Active {
+function getLastActiveChar(clues: CluesData, active: Active & {}): Active {
   const { char, clueNumber, direction } = active;
   const lastActive: Active = {
     char: char - 1,
@@ -106,7 +106,7 @@ function getLastActiveChar(clues: CluesData, active: Active): Active {
   return getLastActiveClue(clues, active);
 }
 
-function getLastActiveClue(clues: CluesData, active: Active): Active {
+function getLastActiveClue(clues: CluesData, active: Active & {}): Active {
   const { clueNumber, direction } = active;
   const clueIndex = clues[direction].order.indexOf(clueNumber) - 1;
   if (clueIndex !== -1) {
@@ -208,11 +208,11 @@ export function reducer(state: State, action: Action): State {
       return { ...state, active: null };
     }
     if (key === 'Delete') {
-      const letters = setLetter(state.letters, i, j, null);
+      const letters = setLetter(state.letters, i, j, '');
       return { ...state, letters };
     }
     if (key === 'Backspace') {
-      const letters = setLetter(state.letters, i, j, null);
+      const letters = setLetter(state.letters, i, j, '');
       const active = getLastActiveChar(state.clues, state.active);
       return { ...state, active, letters };
     }

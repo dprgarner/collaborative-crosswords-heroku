@@ -4,14 +4,14 @@ import * as _ from 'lodash';
 import { Square, Action } from './types';
 
 type GridProps = {
-  layout: (number | string)[][];
+  layout: (number | boolean)[][];
   letters: string[][];
   dispatch: React.Dispatch<Action>;
   activeSquare: Square;
 };
 
 const Grid = ({ layout, letters, dispatch, activeSquare }: GridProps) => {
-  const containerRef = React.useRef<HTMLTableElement>();
+  const containerRef = React.useRef<HTMLTableElement>(null);
   React.useEffect(() => {
     const [i, j] = activeSquare;
     if (i === -1 && j === -1 && containerRef.current) {

@@ -1,4 +1,4 @@
-export type Direction = "across" | "down";
+export type Direction = 'across' | 'down';
 export type Square = [number, number];
 
 export type ClueSetData = {
@@ -26,12 +26,12 @@ export type Active = {
   clueNumber: number;
   char: number;
   direction: Direction;
-};
+} | null;
 
 export type Action =
-  | { type: "BLUR" }
-  | { type: "KEY_PRESS"; keyCode: number; key: string }
-  | { type: "CLICK_CELL"; i: number; j: number };
+  | { type: 'BLUR' }
+  | { type: 'KEY_PRESS'; keyCode: number; key: string }
+  | { type: 'CLICK_CELL'; i: number; j: number };
 
 export type State = {
   readonly active: Active;
