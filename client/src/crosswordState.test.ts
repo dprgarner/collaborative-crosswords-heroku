@@ -2,10 +2,10 @@ import _ from 'lodash';
 
 import { State, UIAction } from './types';
 import { CluesData, Active } from './shared/types';
-import { getLayout, effectReducer, toEffectAction } from './crosswordState';
+import { getLayout, effectReducer, toPlayerAction } from './crosswordState';
 
 const reducer = (state: State, action: UIAction) =>
-  effectReducer(state, toEffectAction(state, action));
+  effectReducer(state, toPlayerAction(state, action));
 
 const clues: CluesData = {
   width: 4,

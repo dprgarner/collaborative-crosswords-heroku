@@ -164,12 +164,26 @@ function getNextSquare(
   return [nextI, nextJ];
 }
 
-type EffectAction = {
+type PlayerAction = {
   active: Active;
   setLetter?: { i: number; j: number; letter: string };
 };
 
-export function toEffectAction(state: State, action: UIAction): EffectAction {
+type EffectAction =
+  | ({ type: 'PLAYER_ACTION' } & PlayerAction)
+  | {
+      type: 'SET_INITIAL_STATE';
+      clues: CluesData;
+      letters: string[][];
+    }
+  | { type: 'RECONNECTING' };
+
+export function toPlayerAction(
+  state: State,
+  action: UIAction,
+): PlayerAction | null {
+  if (!state.clues) return null;
+
   if (action.type === 'BLUR') {
     return { active: null };
   }
@@ -233,11 +247,23 @@ export function toEffectAction(state: State, action: UIAction): EffectAction {
   return { active: state.active };
 }
 
-export function effectReducer(
-  state: State,
-  { active, setLetter }: EffectAction,
-): State {
+export function effectReducer(state: State, action: EffectAction): State {
   let letters = state.letters;
+  if (!action) return state;
+
+  if (action.type === 'SET_INITIAL_STATE') {
+    const { clues, letters } = action;
+    return {
+      active: null,
+      clues,
+      letters,
+    };
+  }
+  if (action.type === 'RECONNECTING') {
+    return { active: null, clues: null, letters: [] };
+  }
+
+  const { active, setLetter } = action;
   if (setLetter) {
     const { i, j, letter } = setLetter;
     letters = [...letters];

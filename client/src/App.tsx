@@ -6,33 +6,45 @@ import './App.css';
 import Clues from './Clues';
 import Grid from './Grid';
 import { UIAction } from './types';
-import { CluesData } from './shared/types';
 import {
-  toEffectAction,
+  toPlayerAction,
   effectReducer,
   getLayout,
   getActiveSquare,
 } from './crosswordState';
 
-// import { Active } from './shared/types';
+import { ServerState } from './shared/fromServer';
 
-type CrosswordProps = {
-  clues: CluesData;
-};
-
-const Crossword = ({ clues: cluesProp }: CrosswordProps) => {
+export default function App() {
   const [state, dispatch] = React.useReducer(effectReducer, {
     active: null,
-    letters: [[], [], ['O', 'P', 'E', 'N'], []],
-    clues: cluesProp,
+    letters: [],
+    clues: null,
   });
+
+  React.useEffect(() => {
+    const socket = io.connect();
+    socket.on('serverState', (serverState: ServerState) => {
+      dispatch({ type: 'SET_INITIAL_STATE', ...serverState });
+    });
+    socket.on('disconnect', () => {
+      dispatch({ type: 'RECONNECTING' });
+    });
+    return () => {
+      socket.close();
+    };
+  }, []);
+
   const { active, letters, clues } = state;
+  if (!clues) return <h1 style={{ height: '100vh' }}>Loading...</h1>;
 
   const uiDispatch = (uiAction: UIAction) => {
-    const effectAction = toEffectAction(state, uiAction);
-    // Send it over a websocket here.
-    console.log(effectAction);
-    dispatch(effectAction);
+    const effectAction = toPlayerAction(state, uiAction);
+    if (effectAction) {
+      // Send it over a websocket here.
+      console.log(effectAction);
+      dispatch({ type: 'PLAYER_ACTION', ...effectAction });
+    }
   };
 
   const layout = getLayout(clues);
@@ -53,38 +65,4 @@ const Crossword = ({ clues: cluesProp }: CrosswordProps) => {
       </div>
     </div>
   );
-};
-
-export default function App() {
-  const clues: CluesData = {
-    width: 4,
-    height: 4,
-    across: {
-      order: [1, 2],
-      byNumber: {
-        1: { clue: 'The sound a doggy makes', size: 4, row: 0, col: 0 },
-        2: { clue: 'You do this to a door', size: 4, row: 2, col: 0 },
-      },
-    },
-    down: {
-      order: [1],
-      byNumber: {
-        1: { clue: 'Lots of trees', size: 4, row: 0, col: 0 },
-      },
-    },
-  };
-
-  React.useEffect(() => {
-    const socket = io.connect();
-
-    socket.on('boo', (msg: string) => {
-      console.log(msg);
-    });
-
-    return () => {
-      socket.close();
-    };
-  }, []);
-
-  return <Crossword clues={clues} />;
 }

@@ -10,5 +10,5 @@ export type UIAction =
 export type State = {
   readonly active: Active;
   readonly letters: string[][];
-  readonly clues: CluesData;
+  readonly clues: CluesData | null;
 };
