@@ -1,11 +1,17 @@
 import _ from 'lodash';
 
-import { State, UIAction } from './types';
+import { UIAction } from './types';
+import { State } from './shared/types';
 import { CluesData, Active } from './shared/types';
-import { getLayout, effectReducer, toPlayerAction } from './crosswordState';
+import { getLayout, toPlayerAction } from './crosswordState';
+import { effectReducer } from './shared/reducer';
 
-const reducer = (state: State, action: UIAction) =>
-  effectReducer(state, toPlayerAction(state, action));
+const reducer = (state: State, action: UIAction) => {
+  const effectAction = toPlayerAction(state, action);
+  return effectAction
+    ? effectReducer(state, { type: 'PLAYER_ACTION', ...effectAction })
+    : state;
+};
 
 const clues: CluesData = {
   width: 4,

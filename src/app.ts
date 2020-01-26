@@ -7,6 +7,7 @@ import socketIo from 'socket.io';
 
 import { CluesData } from './shared/types';
 import { State, PlayerAction } from './shared/types';
+import { effectReducer } from './shared/reducer';
 
 const clues: CluesData = {
   width: 4,
@@ -35,7 +36,7 @@ if (process.env.NODE_ENV === 'production') {
   app.use('/', express.static('client/build'));
 }
 
-const gameState: State = {
+let gameState: State = {
   active: null,
   clues,
   letters: _.range(clues.height).map(() => _.range(clues.height).map(() => '')),
@@ -50,7 +51,8 @@ io.on('connection', socket => {
   });
 
   socket.on('playerAction', (playerAction: PlayerAction) => {
-    console.log(playerAction);
+    gameState = effectReducer(gameState, playerAction);
+    socket.broadcast.emit('playerAction', playerAction);
   });
 });
 

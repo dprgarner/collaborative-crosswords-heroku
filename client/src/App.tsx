@@ -27,6 +27,9 @@ export default function App() {
     socket.on('disconnect', () => {
       dispatch({ type: 'RECONNECTING' });
     });
+    socket.on('playerAction', (playerAction: PlayerAction) => {
+      dispatch(playerAction);
+    });
     return () => {
       socket.close();
     };
