@@ -1,4 +1,5 @@
 import * as React from 'react';
+import io from 'socket.io-client';
 
 import './App.css';
 
@@ -69,6 +70,18 @@ export default function App() {
       },
     },
   };
+
+  React.useEffect(() => {
+    const socket = io.connect();
+
+    socket.on('boo', (msg: string) => {
+      console.log(msg);
+    });
+
+    return () => {
+      socket.close();
+    };
+  }, []);
 
   return <Crossword clues={clues} />;
 }
