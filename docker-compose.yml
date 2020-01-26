@@ -1,9 +1,23 @@
 version: '3.5'
 
 services:
-  web:
+  server:
     build:
       context: .
-      target: server
+      target: server-base
+    command: 'yarn start'
     ports:
       - 4000:4000
+    volumes:
+      - ./src:/app/src
+      - ./client/src/shared:/app/src/shared
+
+  client:
+    build:
+      context: .
+      target: client-base
+    command: 'yarn start'
+    ports:
+      - 3000:3000
+    volumes:
+      - ./client/src:/app/src

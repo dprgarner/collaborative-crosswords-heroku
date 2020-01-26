@@ -2,4 +2,4 @@ build:
   docker:
     web:
       dockerfile: Dockerfile
-      target: server
+      target: production

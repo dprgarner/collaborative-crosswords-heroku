@@ -2,16 +2,13 @@
   "name": "crosswords",
   "version": "0.1.0",
   "description": "Collaborative Cryptic Crossword App",
-  "main": "dist/app.js",
   "repository": "git@github.com:dprgarner/collaborative-crosswords.git",
   "author": "David Garner <dprgarner@gmail.com>",
   "license": "MIT",
   "private": true,
   "scripts": {
-    "start": "nodemon -w src/ -w client/src/shared -i src/shared -e ts -x \"yarn build && node ./dist/src/app.js\"",
-    "build": "cp -rf client/src/shared src/ && tsc",
-    "lint": "eslint src/**/*.ts",
-    "start:prod": "yarn build && NODE_ENV=production node ./dist/src/app.js"
+    "start": "nodemon -w src/ -w client/src/shared -i src/shared -e ts -x \"tsc && node ./dist/src/app.js\"",
+    "lint": "eslint src/*.ts src/**/*.ts"
   },
   "devDependencies": {
     "@types/express": "^4.17.2",

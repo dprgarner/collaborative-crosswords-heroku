@@ -6,61 +6,30 @@ The Client side is built with [create-react-app](https://create-react-app.dev/) 
 
 The server and client code have independent `package.json` and `tsconfig.json` config files, but share the code in `./client/src/shared`. This directory is copied to `./src/shared` in the server source code directory at server build time (there were issues with Webpack and CRA when I tried to use a symlink).
 
-<!--
+## Developing
 
-# Developing
+### Getting started
 
-Open two terminals. Start the development server in one terminal:
+Run `docker-compose up` and open a browser at `http://localhost:3000`. The Create React App server will start on port 3000, which will proxy requests through to the Express server on port 4000. Both servers will refresh on changes to the source code.
 
-```bash
-> yarn
-> yarn start
-```
-
-This server runs on port 4000 and restarts on changes to the source code.
-
-Next, start the Create React App development server:
-
-```bash
-> cd client
-> yarn
-> yarn start
-```
-
-This will start a hot-reloading server on port 3000. The CRA development server proxies the Socket.io requests on to the development server on port 4000.
-
-# Testing
+### Testing
 
 No server-side tests yet. :(
 
 To run the client-side tests:
 
-```
-> cd client && yarn test
-```
-
-# Linting
-
-Linting on the client source code is performed by create-react-app when in development mode. To lint the server source code:
-
-```
-> yarn lint
+```bash
+> docker-compose run --rm client yarn test
 ```
 
-# Production
+### Linting
 
-To build and run in production mode:
+Linting on the client source code is performed by Create React App when it's launched in development mode. To lint the server source code:
 
 ```bash
-> cd client
-> yarn --production
-> yarn build
-> cd ../
-> yarn --production
-> yarn build
-> yarn start:prod
+> docker-compose run --rm server yarn lint
 ```
 
-The server will start on port 4000.
+### Production
 
--->
+The `production` image specified in the Dockerfile is run in production on Heroku.

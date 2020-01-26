@@ -28,7 +28,6 @@ const Grid = ({ layout, letters, dispatch, activeSquare }: GridProps) => {
         dispatch({ type: 'BLUR' });
       }}
       onKeyDown={e => {
-        e.preventDefault();
         dispatch({ type: 'KEY_PRESS', keyCode: e.keyCode, key: e.key });
       }}
     >
