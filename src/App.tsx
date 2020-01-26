@@ -4,19 +4,33 @@ import './App.css';
 
 import Clues from './Clues';
 import Grid from './Grid';
-import { CluesData } from './types';
-import { reducer, getLayout, getActiveSquare } from './crosswordState';
+import { CluesData, UIAction } from './types';
+import {
+  toEffectAction,
+  effectReducer,
+  getLayout,
+  getActiveSquare,
+} from './crosswordState';
 
 type CrosswordProps = {
   clues: CluesData;
 };
 
 const Crossword = ({ clues: cluesProp }: CrosswordProps) => {
-  const [{ active, letters, clues }, dispatch] = React.useReducer(reducer, {
+  const [state, dispatch] = React.useReducer(effectReducer, {
     active: null,
     letters: [[], [], ['O', 'P', 'E', 'N'], []],
     clues: cluesProp,
   });
+  const { active, letters, clues } = state;
+
+  const uiDispatch = (uiAction: UIAction) => {
+    const effectAction = toEffectAction(state, uiAction);
+    // Send it over a websocket here.
+    console.log(effectAction);
+    dispatch(effectAction);
+  };
+
   const layout = getLayout(clues);
   const activeSquare = getActiveSquare(clues, active);
 
@@ -27,7 +41,7 @@ const Crossword = ({ clues: cluesProp }: CrosswordProps) => {
           activeSquare={activeSquare}
           layout={layout}
           letters={letters}
-          dispatch={dispatch}
+          dispatch={uiDispatch}
         />
       </div>
       <div>

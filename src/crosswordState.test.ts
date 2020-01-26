@@ -1,7 +1,10 @@
 import _ from 'lodash';
 
-import { CluesData, State, Action, Active } from './types';
-import { reducer, getLayout, getActiveSquare } from './crosswordState';
+import { CluesData, State, UIAction, Active } from './types';
+import { getLayout, effectReducer, toEffectAction } from './crosswordState';
+
+const reducer = (state: State, action: UIAction) =>
+  effectReducer(state, toEffectAction(state, action));
 
 const clues: CluesData = {
   width: 4,
@@ -44,7 +47,7 @@ describe('blurring', () => {
       clues,
       letters,
     };
-    const action: Action = { type: 'BLUR' };
+    const action: UIAction = { type: 'BLUR' };
     const finalState: State = {
       active: null,
       clues,
@@ -64,7 +67,7 @@ describe('blurring', () => {
       clues,
       letters,
     };
-    const action: Action = {
+    const action: UIAction = {
       type: 'KEY_PRESS',
       key: 'Escape',
       keyCode: 27,
@@ -86,7 +89,7 @@ describe('clicking', () => {
       clues,
       letters,
     };
-    const action: Action = { type: 'CLICK_CELL', i: 2, j: 2 };
+    const action: UIAction = { type: 'CLICK_CELL', i: 2, j: 2 };
     const finalState: State = {
       active: {
         char: 2,
@@ -106,7 +109,7 @@ describe('clicking', () => {
       clues,
       letters,
     };
-    const action: Action = { type: 'CLICK_CELL', i: 1, j: 2 };
+    const action: UIAction = { type: 'CLICK_CELL', i: 1, j: 2 };
     const finalState: State = {
       active: null,
       clues,
@@ -122,7 +125,7 @@ describe('clicking', () => {
       clues,
       letters,
     };
-    const action: Action = { type: 'CLICK_CELL', i: 1, j: 0 };
+    const action: UIAction = { type: 'CLICK_CELL', i: 1, j: 0 };
     const finalState: State = {
       active: {
         char: 1,
@@ -146,7 +149,7 @@ describe('clicking', () => {
       clues,
       letters,
     };
-    const action: Action = { type: 'CLICK_CELL', i: 0, j: 0 };
+    const action: UIAction = { type: 'CLICK_CELL', i: 0, j: 0 };
     const finalState: State = {
       active: {
         char: 0,
@@ -170,7 +173,7 @@ describe('clicking', () => {
       clues,
       letters,
     };
-    const action: Action = { type: 'CLICK_CELL', i: 0, j: 0 };
+    const action: UIAction = { type: 'CLICK_CELL', i: 0, j: 0 };
     const finalState: State = {
       active: {
         char: 0,
@@ -195,7 +198,7 @@ describe('entering letters', () => {
       clues,
       letters: [[], [], [], []],
     };
-    const actions: Action[] = [
+    const actions: UIAction[] = [
       { type: 'KEY_PRESS', key: 'w', keyCode: 'W'.charCodeAt(0) },
       { type: 'KEY_PRESS', key: 'e', keyCode: 'E'.charCodeAt(0) },
       { type: 'KEY_PRESS', key: 'l', keyCode: 'L'.charCodeAt(0) },
@@ -222,7 +225,7 @@ describe('entering letters', () => {
       clues,
       letters: [['W', 'E', 'L', 'P'], [], [], []],
     };
-    const actions: Action[] = [
+    const actions: UIAction[] = [
       { type: 'KEY_PRESS', key: 'n', keyCode: 'N'.charCodeAt(0) },
       { type: 'KEY_PRESS', key: 'o', keyCode: 'O'.charCodeAt(0) },
       { type: 'KEY_PRESS', key: 'p', keyCode: 'P'.charCodeAt(0) },
@@ -247,7 +250,7 @@ describe('deleting letters', () => {
       clues,
       letters: [['W', 'E', 'L', 'P'], [], [], []],
     };
-    const actions: Action[] = [
+    const actions: UIAction[] = [
       { type: 'KEY_PRESS', key: 'Delete', keyCode: 46 },
     ];
     expect(actions.reduce(reducer, state)).toEqual({
@@ -271,7 +274,7 @@ describe('deleting letters', () => {
       clues,
       letters: [['W', 'E', 'L', 'P'], [], [], []],
     };
-    const actions: Action[] = [
+    const actions: UIAction[] = [
       { type: 'KEY_PRESS', key: 'Backspace', keyCode: 8 },
       { type: 'KEY_PRESS', key: 'Backspace', keyCode: 8 },
       { type: 'KEY_PRESS', key: 'Backspace', keyCode: 8 },
@@ -311,7 +314,7 @@ describe('navigating letters', () => {
       clues,
       letters: [[], [], [], []],
     };
-    const actions: Action[] = _.times(10, () => ({
+    const actions: UIAction[] = _.times(10, () => ({
       type: 'KEY_PRESS',
       key: 'ArrowRight',
       keyCode: 39,
@@ -343,7 +346,7 @@ describe('navigating letters', () => {
       clues,
       letters: [[], [], [], []],
     };
-    const actions: Action[] = _.times(10, () => ({
+    const actions: UIAction[] = _.times(10, () => ({
       type: 'KEY_PRESS',
       key: 'ArrowDown',
       keyCode: 40,
@@ -375,7 +378,7 @@ describe('navigating letters', () => {
       clues,
       letters: [[], [], [], []],
     };
-    const actions: Action[] = _.times(10, () => ({
+    const actions: UIAction[] = _.times(10, () => ({
       type: 'KEY_PRESS',
       key: 'ArrowLeft',
       keyCode: 37,
@@ -407,7 +410,7 @@ describe('navigating letters', () => {
       clues,
       letters: [[], [], [], []],
     };
-    const actions: Action[] = _.times(10, () => ({
+    const actions: UIAction[] = _.times(10, () => ({
       type: 'KEY_PRESS',
       key: 'ArrowUp',
       keyCode: 38,

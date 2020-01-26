@@ -1,12 +1,12 @@
 import * as React from 'react';
 import classNames from 'classnames';
 import * as _ from 'lodash';
-import { Square, Action } from './types';
+import { Square, UIAction } from './types';
 
 type GridProps = {
   layout: (number | boolean)[][];
   letters: string[][];
-  dispatch: React.Dispatch<Action>;
+  dispatch: React.Dispatch<UIAction>;
   activeSquare: Square;
 };
 

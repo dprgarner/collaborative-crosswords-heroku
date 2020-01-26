@@ -1,6 +1,6 @@
 import memoizeOne from 'memoize-one';
 
-import { Active, Square, CluesData, State, Action } from './types';
+import { Active, Square, CluesData, State, UIAction } from './types';
 
 export const getLayout = memoizeOne(
   ({ width, height, across, down }: CluesData): (number | boolean)[][] => {
@@ -128,19 +128,6 @@ function getLastActiveClue(clues: CluesData, active: Active & {}): Active {
   return null;
 }
 
-function setLetter(
-  letters: string[][],
-  i: number,
-  j: number,
-  letter: string,
-): string[][] {
-  const newLetters = [...letters];
-  const newRow = [...letters[i]];
-  newRow[j] = letter;
-  newLetters[i] = newRow;
-  return newLetters;
-}
-
 function getNextSquare(
   clues: CluesData,
   [i, j]: Square,
@@ -176,12 +163,14 @@ function getNextSquare(
   return [nextI, nextJ];
 }
 
-export function reducer(state: State, action: Action): State {
+type EffectAction = {
+  active: Active;
+  setLetter?: { i: number; j: number; letter: string };
+};
+
+export function toEffectAction(state: State, action: UIAction): EffectAction {
   if (action.type === 'BLUR') {
-    return {
-      ...state,
-      active: null,
-    };
+    return { active: null };
   }
   const [i, j] = getActiveSquare(state.clues, state.active);
   if (action.type === 'CLICK_CELL') {
@@ -192,12 +181,10 @@ export function reducer(state: State, action: Action): State {
       // A user clicking the same square twice
       // probably wants to switch direction.
       return {
-        ...state,
         active: downActive || acrossActive,
       };
     }
     return {
-      ...state,
       active: acrossActive || downActive,
     };
   }
@@ -205,21 +192,18 @@ export function reducer(state: State, action: Action): State {
     if (!state.active) return state; // This shouldn't normally happen.
     const { key, keyCode } = action;
     if (key === 'Escape') {
-      return { ...state, active: null };
+      return { active: null };
     }
     if (key === 'Delete') {
-      const letters = setLetter(state.letters, i, j, '');
-      return { ...state, letters };
+      return { active: state.active, setLetter: { i, j, letter: '' } };
     }
     if (key === 'Backspace') {
-      const letters = setLetter(state.letters, i, j, '');
       const active = getLastActiveChar(state.clues, state.active);
-      return { ...state, active, letters };
+      return { active, setLetter: { i, j, letter: '' } };
     }
     if ((keyCode >= 65 && keyCode < 91) || key === ' ') {
-      const letters = setLetter(state.letters, i, j, key.toUpperCase());
       const active = getNextActiveChar(state.clues, state.active);
-      return { ...state, active, letters };
+      return { active, setLetter: { i, j, letter: key.toUpperCase() } };
     }
 
     if (
@@ -238,7 +222,6 @@ export function reducer(state: State, action: Action): State {
       const acrossActive = getAcrossActive(state.clues, nextI, nextJ);
       const downActive = getDownActive(state.clues, nextI, nextJ);
       return {
-        ...state,
         active:
           state.active.direction === 'across'
             ? acrossActive || downActive
@@ -246,5 +229,24 @@ export function reducer(state: State, action: Action): State {
       };
     }
   }
-  return state;
+  return { active: state.active };
+}
+
+export function effectReducer(
+  state: State,
+  { active, setLetter }: EffectAction,
+): State {
+  let letters = state.letters;
+  if (setLetter) {
+    const { i, j, letter } = setLetter;
+    letters = [...letters];
+    const newRow = [...letters[i]];
+    newRow[j] = letter;
+    letters[i] = newRow;
+  }
+  return {
+    ...state,
+    active,
+    letters,
+  };
 }

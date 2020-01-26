@@ -28,7 +28,7 @@ export type Active = {
   direction: Direction;
 } | null;
 
-export type Action =
+export type UIAction =
   | { type: 'BLUR' }
   | { type: 'KEY_PRESS'; keyCode: number; key: string }
   | { type: 'CLICK_CELL'; i: number; j: number };
