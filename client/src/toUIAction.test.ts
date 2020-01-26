@@ -3,11 +3,11 @@ import _ from 'lodash';
 import { UIAction } from './types';
 import { State } from './shared/types';
 import { CluesData, Active } from './shared/types';
-import { getLayout, toPlayerAction } from './crosswordState';
+import toUIAction from './toUIAction';
 import { effectReducer } from './shared/reducer';
 
 const reducer = (state: State, action: UIAction) => {
-  const effectAction = toPlayerAction(state, action);
+  const effectAction = toUIAction(state, action);
   return effectAction
     ? effectReducer(state, { type: 'PLAYER_ACTION', ...effectAction })
     : state;
@@ -30,17 +30,6 @@ const clues: CluesData = {
     },
   },
 };
-
-describe('getLayout', () => {
-  it('renders a layout', () => {
-    expect(getLayout(clues)).toEqual([
-      [1, true, true, true],
-      [true, false, false, false],
-      [2, true, true, true],
-      [true, false, false, false],
-    ]);
-  });
-});
 
 describe('blurring', () => {
   it('blurs on action', () => {

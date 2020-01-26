@@ -1,43 +1,6 @@
-import memoizeOne from 'memoize-one';
-
 import { Square, UIAction } from './types';
 import { Active, CluesData, CurrentPlayerAction, State } from './shared/types';
-
-export const getLayout = memoizeOne(
-  ({ width, height, across, down }: CluesData): (number | boolean)[][] => {
-    const layout: (number | boolean)[][] = [];
-    for (let i = 0; i < height; i++) {
-      layout[i] = [];
-      for (let j = 0; j < width; j++) {
-        layout[i][j] = false;
-      }
-    }
-    for (const number of across.order) {
-      const { size, row, col } = across.byNumber[number];
-      layout[row][col] = number;
-      for (let offset = 0; offset < size; offset++) {
-        layout[row][col + offset] = layout[row][col + offset] || true;
-      }
-    }
-    for (const number of down.order) {
-      const { size, row, col } = down.byNumber[number];
-      layout[row][col] = number;
-      for (let offset = 0; offset < size; offset++) {
-        layout[row + offset][col] = layout[row + offset][col] || true;
-      }
-    }
-    return layout;
-  },
-);
-
-export function getActiveSquare(clues: CluesData, active: Active): Square {
-  if (!active) return [-1, -1];
-  const { clueNumber, char, direction } = active;
-  const clue = clues[direction].byNumber[clueNumber];
-  if (!clue) return [-1, -1];
-  const { row, col } = clue;
-  return direction === 'across' ? [row, col + char] : [row + char, col];
-}
+import { getLayout, getActiveSquare } from './gridSelectors';
 
 function getAcrossActive(clues: CluesData, i: number, j: number): Active {
   for (const clueNumber of clues.across.order) {
@@ -164,7 +127,7 @@ function getNextSquare(
   return [nextI, nextJ];
 }
 
-export function toPlayerAction(
+export default function toUIAction(
   state: State,
   action: UIAction,
 ): CurrentPlayerAction | null {
