@@ -1,6 +1,7 @@
 import memoizeOne from 'memoize-one';
 
-import { Active, Square, CluesData, State, UIAction } from './types';
+import { Square, State, UIAction } from './types';
+import { Active, CluesData } from './shared/types';
 
 export const getLayout = memoizeOne(
   ({ width, height, across, down }: CluesData): (number | boolean)[][] => {

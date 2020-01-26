@@ -5,13 +5,16 @@ import './App.css';
 
 import Clues from './Clues';
 import Grid from './Grid';
-import { CluesData, UIAction } from './types';
+import { UIAction } from './types';
+import { CluesData } from './shared/types';
 import {
   toEffectAction,
   effectReducer,
   getLayout,
   getActiveSquare,
 } from './crosswordState';
+
+// import { Active } from './shared/types';
 
 type CrosswordProps = {
   clues: CluesData;

@@ -4,6 +4,8 @@ import express from 'express';
 import http from 'http';
 import socketIo from 'socket.io';
 
+// import { Active } from './shared/types';
+
 const PORT = 4000;
 const app = express();
 const server = http.createServer(app);
@@ -21,7 +23,7 @@ io.on('connection', socket => {
   console.log('a socket connected');
 
   const interval = setInterval(() => {
-    socket.emit('boo', 'hello');
+    socket.emit('boo', { hello: 'world' });
   }, 1500);
 
   socket.on('disconnect', () => {

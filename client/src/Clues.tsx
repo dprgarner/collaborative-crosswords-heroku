@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { ClueSetData } from './types';
+import { ClueSetData } from './shared/types';
 
 type ClueProps = {
   number: number;

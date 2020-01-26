@@ -1,6 +1,7 @@
 import _ from 'lodash';
 
-import { CluesData, State, UIAction, Active } from './types';
+import { State, UIAction } from './types';
+import { CluesData, Active } from './shared/types';
 import { getLayout, effectReducer, toEffectAction } from './crosswordState';
 
 const reducer = (state: State, action: UIAction) =>
