@@ -4,11 +4,12 @@ COPY ./client/package.json ./client/yarn.lock ./
 RUN yarn
 COPY ./client/ ./
 
+
 FROM node:12-stretch-slim AS server-base
 WORKDIR /app
 COPY ./package.json ./yarn.lock ./tsconfig.json .eslintrc.yml ./
 RUN yarn
-COPY ./src .
+COPY ./src ./src
 COPY ./client/src/shared ./src/shared
 
 
@@ -27,4 +28,4 @@ COPY ./package.json ./yarn.lock ./
 RUN yarn --production
 COPY --from=client-build /app/build /app/client/build
 COPY --from=server-build /app/dist /app/dist
-CMD ["node", "dist/src/app.js"]
+CMD ["node", "/app/dist/src/app.js"]

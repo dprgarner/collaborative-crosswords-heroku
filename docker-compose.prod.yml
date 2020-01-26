@@ -1,0 +1,11 @@
+version: '3.5'
+
+services:
+  production:
+    build:
+      context: .
+      target: production
+    environment:
+      PORT: 4000
+    ports:
+      - 4000:4000
