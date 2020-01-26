@@ -1,7 +1,7 @@
 import memoizeOne from 'memoize-one';
 
-import { Square, State, UIAction } from './types';
-import { Active, CluesData } from './shared/types';
+import { Square, UIAction } from './types';
+import { Active, CluesData, CurrentPlayerAction, State } from './shared/types';
 
 export const getLayout = memoizeOne(
   ({ width, height, across, down }: CluesData): (number | boolean)[][] => {
@@ -164,24 +164,10 @@ function getNextSquare(
   return [nextI, nextJ];
 }
 
-type PlayerAction = {
-  active: Active;
-  setLetter?: { i: number; j: number; letter: string };
-};
-
-type EffectAction =
-  | ({ type: 'PLAYER_ACTION' } & PlayerAction)
-  | {
-      type: 'SET_INITIAL_STATE';
-      clues: CluesData;
-      letters: string[][];
-    }
-  | { type: 'RECONNECTING' };
-
 export function toPlayerAction(
   state: State,
   action: UIAction,
-): PlayerAction | null {
+): CurrentPlayerAction | null {
   if (!state.clues) return null;
 
   if (action.type === 'BLUR') {
@@ -245,35 +231,4 @@ export function toPlayerAction(
     }
   }
   return { active: state.active };
-}
-
-export function effectReducer(state: State, action: EffectAction): State {
-  let letters = state.letters;
-  if (!action) return state;
-
-  if (action.type === 'SET_INITIAL_STATE') {
-    const { clues, letters } = action;
-    return {
-      active: null,
-      clues,
-      letters,
-    };
-  }
-  if (action.type === 'RECONNECTING') {
-    return { active: null, clues: null, letters: [] };
-  }
-
-  const { active, setLetter } = action;
-  if (setLetter) {
-    const { i, j, letter } = setLetter;
-    letters = [...letters];
-    const newRow = [...letters[i]];
-    newRow[j] = letter;
-    letters[i] = newRow;
-  }
-  return {
-    ...state,
-    active,
-    letters,
-  };
 }

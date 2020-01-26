@@ -12,6 +12,9 @@ coverage
 # production server build
 /dist
 
+# This is copied-across at build time.
+src/shared
+
 # misc
 .DS_Store
 .env.local

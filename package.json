@@ -8,9 +8,10 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "start": "nodemon -w src/ -e ts -x \"tsc && node ./dist/src/app.js\"",
+    "start": "nodemon -w src/ -w client/src/shared -i src/shared -e ts -x \"yarn build && node ./dist/src/app.js\"",
+    "build": "cp -rf client/src/shared src/ && tsc",
     "lint": "eslint src/**/*.ts",
-    "start:prod": "tsc && NODE_ENV=production node ./dist/src/app.js"
+    "start:prod": "yarn build && NODE_ENV=production node ./dist/src/app.js"
   },
   "devDependencies": {
     "@types/express": "^4.17.2",

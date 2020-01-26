@@ -6,7 +6,7 @@ import http from 'http';
 import socketIo from 'socket.io';
 
 import { CluesData } from './shared/types';
-import { ServerState } from './shared/fromServer';
+import { State, PlayerAction } from './shared/types';
 
 const clues: CluesData = {
   width: 4,
@@ -35,20 +35,22 @@ if (process.env.NODE_ENV === 'production') {
   app.use('/', express.static('client/build'));
 }
 
+const gameState: State = {
+  active: null,
+  clues,
+  letters: _.range(clues.height).map(() => _.range(clues.height).map(() => '')),
+};
+
 io.on('connection', socket => {
   console.log('a socket connected');
-
-  const letters = _.range(clues.height).map(() =>
-    _.range(clues.height).map(() => ''),
-  );
-  const serverState: ServerState = {
-    clues,
-    letters,
-  };
-  socket.emit('serverState', serverState);
+  socket.emit('serverState', gameState);
 
   socket.on('disconnect', () => {
     console.log('the socket disconnected');
+  });
+
+  socket.on('playerAction', (playerAction: PlayerAction) => {
+    console.log(playerAction);
   });
 });
 
