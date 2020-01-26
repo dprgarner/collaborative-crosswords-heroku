@@ -32,9 +32,6 @@ const Crossword = ({ clues: cluesProp }: CrosswordProps) => {
       </div>
       <div>
         <Clues across={clues.across} down={clues.down} />
-        <pre>
-          {active && `${JSON.stringify(activeSquare)} - ${active.direction}`}
-        </pre>
       </div>
     </div>
   );

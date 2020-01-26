@@ -42,6 +42,7 @@ const Grid = ({ layout, letters, dispatch, activeSquare }: GridProps) => {
                 onClick={() => {
                   dispatch({ type: 'CLICK_CELL', i, j });
                 }}
+                data-testid={`${i},${j}`}
               >
                 {_.isNumber(col) && <span className="GridNumber">{col}</span>}
 
