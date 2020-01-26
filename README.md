@@ -6,6 +6,8 @@ The Client side is built with [create-react-app](https://create-react-app.dev/) 
 
 The server and client code have independent `package.json` and `tsconfig.json` config files, but share the code in `./client/src/shared`. This directory is copied to `./src/shared` in the server source code directory at server build time (there were issues with Webpack and CRA when I tried to use a symlink).
 
+<!--
+
 # Developing
 
 Open two terminals. Start the development server in one terminal:
@@ -60,3 +62,5 @@ To build and run in production mode:
 ```
 
 The server will start on port 4000.
+
+-->
