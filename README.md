@@ -12,9 +12,11 @@ The server and client code have independent `package.json` and `tsconfig.json` c
 
 ## Developing
 
+## Getting started
+
 Run `docker-compose up` and open a browser at `http://localhost:3000`. The Create React App server will start on port 3000, which will proxy requests through to the Express server on port 4000. Both servers will refresh on changes to the source code.
 
-## Testing
+### Testing
 
 No server-side tests yet. :(
 
@@ -24,7 +26,7 @@ To run the client-side tests:
 > docker-compose run --rm client yarn test
 ```
 
-## Linting
+### Linting
 
 Linting on the client source code is performed by Create React App when it's launched in development mode. To lint the server source code:
 
@@ -32,10 +34,20 @@ Linting on the client source code is performed by Create React App when it's lau
 > docker-compose run --rm server yarn lint
 ```
 
-## Production
+### Production
 
 The `production` image specified in the Dockerfile is run in production on Heroku. If it goes wrong, try debugging with the local docker-compose production stack:
 
 ```bash
 > docker-compose -f docker-compose.prod.yml up
 ```
+
+## TODO
+
+- Event when user completes the crossword, and action to reset
+- Different cursors for different active users
+- Improve the cursor (highlight the whole clue, not just the letter)
+- Store crosswords in Yaml
+- Write a better crossword
+- Store the state outside of the Node process when in production (Redis?)
+- Add many crosswords.

@@ -22,6 +22,8 @@ const clues: CluesData = {
 };
 
 export default function setupCrossword(io: SocketIO.Server): void {
+  // TODO go more 12-factor app and have this in Redis or something else, just
+  // not local state.
   let gameState: State = {
     active: null,
     clues,
