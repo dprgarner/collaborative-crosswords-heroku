@@ -22,10 +22,9 @@ const clues: CluesData = {
 };
 
 export default function setupCrossword(io: SocketIO.Server): void {
-  // TODO go more 12-factor app and have this in Redis or something else, just
-  // not local state.
+  // TODO put this in Redis or something else instead of local state.
   let gameState: State = {
-    active: null,
+    cursor: null,
     clues,
     letters: _.range(clues.height).map(() =>
       _.range(clues.height).map(() => ''),

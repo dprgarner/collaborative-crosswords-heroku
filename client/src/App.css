@@ -52,7 +52,7 @@
   padding: 2px;
 }
 
-.GridLetter.active {
+.GridLetter.cursor {
   outline: 3px solid red;
   z-index: 1;
 }

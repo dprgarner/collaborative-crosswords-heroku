@@ -7,16 +7,16 @@ export function effectReducer(state: State, action: EffectAction): State {
   if (action.type === 'SET_INITIAL_STATE') {
     const { clues, letters } = action;
     return {
-      active: null,
+      cursor: null,
       clues,
       letters,
     };
   }
   if (action.type === 'RECONNECTING') {
-    return { active: null, clues: null, letters: [] };
+    return { cursor: null, clues: null, letters: [] };
   }
 
-  const { active, setLetter } = action;
+  const { cursor, setLetter } = action;
   if (setLetter) {
     const { i, j, letter } = setLetter;
     letters = [...letters];
@@ -26,7 +26,7 @@ export function effectReducer(state: State, action: EffectAction): State {
   }
   return {
     ...state,
-    active,
+    cursor,
     letters,
   };
 }

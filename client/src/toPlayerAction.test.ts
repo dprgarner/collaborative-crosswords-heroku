@@ -2,7 +2,7 @@ import _ from 'lodash';
 
 import { UIAction } from './types';
 import { State } from './shared/types';
-import { CluesData, Active } from './shared/types';
+import { CluesData, Cursor } from './shared/types';
 import toPlayerAction from './toPlayerAction';
 import { effectReducer } from './shared/reducer';
 
@@ -35,7 +35,7 @@ describe('blurring', () => {
   it('blurs on action', () => {
     const letters = [[], [], [], []];
     const state: State = {
-      active: {
+      cursor: {
         char: 3,
         clueNumber: 2,
         direction: 'across',
@@ -45,7 +45,7 @@ describe('blurring', () => {
     };
     const action: UIAction = { type: 'BLUR' };
     const finalState: State = {
-      active: null,
+      cursor: null,
       clues,
       letters,
     };
@@ -55,7 +55,7 @@ describe('blurring', () => {
   it('blurs on escape', () => {
     const letters = [[], [], [], []];
     const state: State = {
-      active: {
+      cursor: {
         char: 3,
         clueNumber: 2,
         direction: 'across',
@@ -69,7 +69,7 @@ describe('blurring', () => {
       keyCode: 27,
     };
     const finalState: State = {
-      active: null,
+      cursor: null,
       clues,
       letters,
     };
@@ -81,13 +81,13 @@ describe('clicking', () => {
   it('selects a square', () => {
     const letters = [[], [], [], []];
     const state: State = {
-      active: null,
+      cursor: null,
       clues,
       letters,
     };
     const action: UIAction = { type: 'CLICK_CELL', i: 2, j: 2 };
     const finalState: State = {
-      active: {
+      cursor: {
         char: 2,
         clueNumber: 2,
         direction: 'across',
@@ -101,13 +101,13 @@ describe('clicking', () => {
   it('selects nowhere if the square is black', () => {
     const letters = [[], [], [], []];
     const state: State = {
-      active: null,
+      cursor: null,
       clues,
       letters,
     };
     const action: UIAction = { type: 'CLICK_CELL', i: 1, j: 2 };
     const finalState: State = {
-      active: null,
+      cursor: null,
       clues,
       letters,
     };
@@ -117,13 +117,13 @@ describe('clicking', () => {
   it('selects a down-only clue square', () => {
     const letters = [[], [], [], []];
     const state: State = {
-      active: null,
+      cursor: null,
       clues,
       letters,
     };
     const action: UIAction = { type: 'CLICK_CELL', i: 1, j: 0 };
     const finalState: State = {
-      active: {
+      cursor: {
         char: 1,
         clueNumber: 1,
         direction: 'down',
@@ -137,7 +137,7 @@ describe('clicking', () => {
   it('switches orientation to across when clicking the same square', () => {
     const letters = [[], [], [], []];
     const state: State = {
-      active: {
+      cursor: {
         char: 0,
         clueNumber: 1,
         direction: 'down',
@@ -147,7 +147,7 @@ describe('clicking', () => {
     };
     const action: UIAction = { type: 'CLICK_CELL', i: 0, j: 0 };
     const finalState: State = {
-      active: {
+      cursor: {
         char: 0,
         clueNumber: 1,
         direction: 'across',
@@ -161,7 +161,7 @@ describe('clicking', () => {
   it('switches orientation to down clicking the same square', () => {
     const letters = [[], [], [], []];
     const state: State = {
-      active: {
+      cursor: {
         char: 0,
         clueNumber: 1,
         direction: 'across',
@@ -171,7 +171,7 @@ describe('clicking', () => {
     };
     const action: UIAction = { type: 'CLICK_CELL', i: 0, j: 0 };
     const finalState: State = {
-      active: {
+      cursor: {
         char: 0,
         clueNumber: 1,
         direction: 'down',
@@ -186,7 +186,7 @@ describe('clicking', () => {
 describe('entering letters', () => {
   it('enters a word', () => {
     const state: State = {
-      active: {
+      cursor: {
         char: 0,
         clueNumber: 1,
         direction: 'across',
@@ -201,7 +201,7 @@ describe('entering letters', () => {
       { type: 'KEY_PRESS', key: 'p', keyCode: 'P'.charCodeAt(0) },
     ];
     expect(actions.reduce(reducer, state)).toEqual({
-      active: {
+      cursor: {
         char: 0,
         clueNumber: 2,
         direction: 'across',
@@ -213,7 +213,7 @@ describe('entering letters', () => {
 
   it('enters a word downwards', () => {
     const state: State = {
-      active: {
+      cursor: {
         char: 0,
         clueNumber: 1,
         direction: 'down',
@@ -228,7 +228,7 @@ describe('entering letters', () => {
       { type: 'KEY_PRESS', key: 'e', keyCode: 'E'.charCodeAt(0) },
     ];
     expect(actions.reduce(reducer, state)).toEqual({
-      active: null,
+      cursor: null,
       clues,
       letters: [['N', 'E', 'L', 'P'], ['O'], ['P'], ['E']],
     });
@@ -238,7 +238,7 @@ describe('entering letters', () => {
 describe('deleting letters', () => {
   it('deletes a letter in-place', () => {
     const state: State = {
-      active: {
+      cursor: {
         char: 2,
         clueNumber: 1,
         direction: 'across',
@@ -250,7 +250,7 @@ describe('deleting letters', () => {
       { type: 'KEY_PRESS', key: 'Delete', keyCode: 46 },
     ];
     expect(actions.reduce(reducer, state)).toEqual({
-      active: {
+      cursor: {
         char: 2,
         clueNumber: 1,
         direction: 'across',
@@ -262,7 +262,7 @@ describe('deleting letters', () => {
 
   it('deletes multiple letters', () => {
     const state: State = {
-      active: {
+      cursor: {
         char: 3,
         clueNumber: 1,
         direction: 'across',
@@ -276,7 +276,7 @@ describe('deleting letters', () => {
       { type: 'KEY_PRESS', key: 'Backspace', keyCode: 8 },
     ];
     expect(actions.reduce(reducer, state)).toEqual({
-      active: {
+      cursor: {
         char: 0,
         clueNumber: 1,
         direction: 'across',
@@ -302,7 +302,7 @@ function scan<A, T>(xs: T[], f: (a: A, t: T) => A, acc: A) {
 describe('navigating letters', () => {
   it('moves right', () => {
     const state: State = {
-      active: {
+      cursor: {
         char: 0,
         clueNumber: 1,
         direction: 'across',
@@ -315,10 +315,10 @@ describe('navigating letters', () => {
       key: 'ArrowRight',
       keyCode: 39,
     }));
-    const activeStates: Active[] = scan(actions, reducer, state).map(
-      ({ active }) => active,
+    const cursorStates: Cursor[] = scan(actions, reducer, state).map(
+      ({ cursor }) => cursor,
     );
-    expect(activeStates).toEqual([
+    expect(cursorStates).toEqual([
       { direction: 'across', clueNumber: 1, char: 1 },
       { direction: 'across', clueNumber: 1, char: 2 },
       { direction: 'across', clueNumber: 1, char: 3 },
@@ -334,7 +334,7 @@ describe('navigating letters', () => {
 
   it('moves down', () => {
     const state: State = {
-      active: {
+      cursor: {
         char: 0,
         clueNumber: 1,
         direction: 'across',
@@ -347,10 +347,10 @@ describe('navigating letters', () => {
       key: 'ArrowDown',
       keyCode: 40,
     }));
-    const activeStates: Active[] = scan(actions, reducer, state).map(
-      ({ active }) => active,
+    const cursorStates: Cursor[] = scan(actions, reducer, state).map(
+      ({ cursor }) => cursor,
     );
-    expect(activeStates).toEqual([
+    expect(cursorStates).toEqual([
       { direction: 'down', clueNumber: 1, char: 1 },
       { direction: 'down', clueNumber: 1, char: 2 },
       { direction: 'down', clueNumber: 1, char: 3 },
@@ -366,7 +366,7 @@ describe('navigating letters', () => {
 
   it('moves left', () => {
     const state: State = {
-      active: {
+      cursor: {
         char: 0,
         clueNumber: 1,
         direction: 'across',
@@ -379,10 +379,10 @@ describe('navigating letters', () => {
       key: 'ArrowLeft',
       keyCode: 37,
     }));
-    const activeStates: Active[] = scan(actions, reducer, state).map(
-      ({ active }) => active,
+    const cursorStates: Cursor[] = scan(actions, reducer, state).map(
+      ({ cursor }) => cursor,
     );
-    expect(activeStates).toEqual([
+    expect(cursorStates).toEqual([
       { direction: 'down', clueNumber: 1, char: 3 },
       { direction: 'across', clueNumber: 2, char: 3 },
       { direction: 'across', clueNumber: 2, char: 2 },
@@ -398,7 +398,7 @@ describe('navigating letters', () => {
 
   it('moves up', () => {
     const state: State = {
-      active: {
+      cursor: {
         char: 0,
         clueNumber: 1,
         direction: 'across',
@@ -411,10 +411,10 @@ describe('navigating letters', () => {
       key: 'ArrowUp',
       keyCode: 38,
     }));
-    const activeStates: Active[] = scan(actions, reducer, state).map(
-      ({ active }) => active,
+    const cursorStates: Cursor[] = scan(actions, reducer, state).map(
+      ({ cursor }) => cursor,
     );
-    expect(activeStates).toEqual([
+    expect(cursorStates).toEqual([
       { direction: 'across', clueNumber: 2, char: 3 },
       { direction: 'across', clueNumber: 1, char: 3 },
       { direction: 'across', clueNumber: 2, char: 2 },

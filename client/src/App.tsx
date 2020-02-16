@@ -6,14 +6,14 @@ import './App.css';
 import Clues from './Clues';
 import Grid from './Grid';
 import { UIAction } from './types';
-import toPlayerAction from './toUIAction';
-import { getLayout, getActiveSquare } from './gridSelectors';
+import toPlayerAction from './toPlayerAction';
+import { getLayout, getCursorSquare } from './gridSelectors';
 import { effectReducer } from './shared/reducer';
 import { State, PlayerAction } from './shared/types';
 
 export default function App() {
   const [state, dispatch] = React.useReducer(effectReducer, {
-    active: null,
+    cursor: null,
     letters: [],
     clues: null,
   });
@@ -36,7 +36,7 @@ export default function App() {
     };
   }, []);
 
-  const { active, letters, clues } = state;
+  const { cursor, letters, clues } = state;
   if (!clues) return <h1 style={{ height: '100vh' }}>Loading...</h1>;
 
   const uiDispatch = (uiAction: UIAction) => {
@@ -49,13 +49,13 @@ export default function App() {
   };
 
   const layout = getLayout(clues);
-  const activeSquare = getActiveSquare(clues, active);
+  const cursorSquare = getCursorSquare(clues, cursor);
 
   return (
     <div className="Crossword">
       <div className="GridPanel">
         <Grid
-          activeSquare={activeSquare}
+          cursorSquare={cursorSquare}
           layout={layout}
           letters={letters}
           dispatch={uiDispatch}

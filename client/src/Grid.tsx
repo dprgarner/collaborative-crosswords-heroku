@@ -7,17 +7,17 @@ type GridProps = {
   layout: (number | boolean)[][];
   letters: string[][];
   dispatch: React.Dispatch<UIAction>;
-  activeSquare: Square;
+  cursorSquare: Square;
 };
 
-const Grid = ({ layout, letters, dispatch, activeSquare }: GridProps) => {
+const Grid = ({ layout, letters, dispatch, cursorSquare }: GridProps) => {
   const containerRef = React.useRef<HTMLTableElement>(null);
   React.useEffect(() => {
-    const [i, j] = activeSquare;
+    const [i, j] = cursorSquare;
     if (i === -1 && j === -1 && containerRef.current) {
       containerRef.current.blur();
     }
-  }, [activeSquare]);
+  }, [cursorSquare]);
 
   return (
     <table
@@ -51,9 +51,9 @@ const Grid = ({ layout, letters, dispatch, activeSquare }: GridProps) => {
                   <span
                     className={classNames(
                       'GridLetter',
-                      i === activeSquare[0] &&
-                        j === activeSquare[1] &&
-                        'active',
+                      i === cursorSquare[0] &&
+                        j === cursorSquare[1] &&
+                        'cursor',
                     )}
                   >
                     {letters[i][j]}

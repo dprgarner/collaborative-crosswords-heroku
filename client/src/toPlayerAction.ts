@@ -1,8 +1,8 @@
 import { Square, UIAction } from './types';
-import { Active, CluesData, PlayerAction, State } from './shared/types';
-import { getLayout, getActiveSquare } from './gridSelectors';
+import { Cursor, CluesData, PlayerAction, State } from './shared/types';
+import { getLayout, getCursorSquare } from './gridSelectors';
 
-function getAcrossActive(clues: CluesData, i: number, j: number): Active {
+function getAcrossCursor(clues: CluesData, i: number, j: number): Cursor {
   for (const clueNumber of clues.across.order) {
     const { row, col, size } = clues.across.byNumber[clueNumber];
     if (i === row && j >= col && j < col + size) {
@@ -12,7 +12,7 @@ function getAcrossActive(clues: CluesData, i: number, j: number): Active {
   return null;
 }
 
-function getDownActive(clues: CluesData, i: number, j: number): Active {
+function getDownCursor(clues: CluesData, i: number, j: number): Cursor {
   for (const clueNumber of clues.down.order) {
     const { row, col, size } = clues.down.byNumber[clueNumber];
     if (j === col && i >= row && i < row + size) {
@@ -22,30 +22,30 @@ function getDownActive(clues: CluesData, i: number, j: number): Active {
   return null;
 }
 
-function getNextActiveChar(clues: CluesData, active: Active & {}): Active {
-  const { char, clueNumber, direction } = active;
+function getNextCursorChar(clues: CluesData, cursor: Cursor & {}): Cursor {
+  const { char, clueNumber, direction } = cursor;
   const clue = clues[direction].byNumber[clueNumber];
-  const nextActive: Active = {
+  const nextCursor: Cursor = {
     char: char + 1,
     clueNumber,
     direction,
   };
-  if (nextActive.char !== clue.size) {
-    return nextActive;
+  if (nextCursor.char !== clue.size) {
+    return nextCursor;
   }
-  return getNextActiveClue(clues, active);
+  return getNextCursorClue(clues, cursor);
 }
 
-function getNextActiveClue(clues: CluesData, active: Active & {}): Active {
-  const { clueNumber, direction } = active;
+function getNextCursorClue(clues: CluesData, cursor: Cursor & {}): Cursor {
+  const { clueNumber, direction } = cursor;
   const clueIndex = clues[direction].order.indexOf(clueNumber) + 1;
-  const nextActive: Active = {
+  const nextCursor: Cursor = {
     char: 0,
     clueNumber: clues[direction].order[clueIndex],
     direction,
   };
-  if (nextActive.clueNumber) {
-    return nextActive;
+  if (nextCursor.clueNumber) {
+    return nextCursor;
   }
   if (direction === 'across') {
     return {
@@ -57,21 +57,21 @@ function getNextActiveClue(clues: CluesData, active: Active & {}): Active {
   return null;
 }
 
-function getLastActiveChar(clues: CluesData, active: Active & {}): Active {
-  const { char, clueNumber, direction } = active;
-  const lastActive: Active = {
+function getLastCursorChar(clues: CluesData, cursor: Cursor & {}): Cursor {
+  const { char, clueNumber, direction } = cursor;
+  const lastCursor: Cursor = {
     char: char - 1,
     clueNumber,
     direction,
   };
-  if (lastActive.char !== -1) {
-    return lastActive;
+  if (lastCursor.char !== -1) {
+    return lastCursor;
   }
-  return getLastActiveClue(clues, active);
+  return getLastCursorClue(clues, cursor);
 }
 
-function getLastActiveClue(clues: CluesData, active: Active & {}): Active {
-  const { clueNumber, direction } = active;
+function getLastCursorClue(clues: CluesData, cursor: Cursor & {}): Cursor {
+  const { clueNumber, direction } = cursor;
   const clueIndex = clues[direction].order.indexOf(clueNumber) - 1;
   if (clueIndex !== -1) {
     const lastClueNumber = clues[direction].order[clueIndex];
@@ -131,40 +131,40 @@ function toPlayerAction(state: State, action: UIAction) {
   if (!state.clues) return null;
 
   if (action.type === 'BLUR') {
-    return { active: null };
+    return { cursor: null };
   }
-  const [i, j] = getActiveSquare(state.clues, state.active);
+  const [i, j] = getCursorSquare(state.clues, state.cursor);
   if (action.type === 'CLICK_CELL') {
-    const direction = state.active && state.active.direction;
-    const acrossActive = getAcrossActive(state.clues, action.i, action.j);
-    const downActive = getDownActive(state.clues, action.i, action.j);
+    const direction = state.cursor && state.cursor.direction;
+    const acrossCursor = getAcrossCursor(state.clues, action.i, action.j);
+    const downCursor = getDownCursor(state.clues, action.i, action.j);
     if (action.i === i && action.j === j && direction === 'across') {
       // A user clicking the same square twice
       // probably wants to switch direction.
       return {
-        active: downActive || acrossActive,
+        cursor: downCursor || acrossCursor,
       };
     }
     return {
-      active: acrossActive || downActive,
+      cursor: acrossCursor || downCursor,
     };
   }
   if (action.type === 'KEY_PRESS') {
-    if (!state.active) return state; // This shouldn't normally happen.
+    if (!state.cursor) return state; // This shouldn't normally happen.
     const { key, keyCode } = action;
     if (key === 'Escape') {
-      return { active: null };
+      return { cursor: null };
     }
     if (key === 'Delete') {
-      return { active: state.active, setLetter: { i, j, letter: '' } };
+      return { cursor: state.cursor, setLetter: { i, j, letter: '' } };
     }
     if (key === 'Backspace') {
-      const active = getLastActiveChar(state.clues, state.active);
-      return { active, setLetter: { i, j, letter: '' } };
+      const cursor = getLastCursorChar(state.clues, state.cursor);
+      return { cursor, setLetter: { i, j, letter: '' } };
     }
     if ((keyCode >= 65 && keyCode < 91) || key === ' ') {
-      const active = getNextActiveChar(state.clues, state.active);
-      return { active, setLetter: { i, j, letter: key.toUpperCase() } };
+      const cursor = getNextCursorChar(state.clues, state.cursor);
+      return { cursor, setLetter: { i, j, letter: key.toUpperCase() } };
     }
 
     if (
@@ -180,17 +180,17 @@ function toPlayerAction(state: State, action: UIAction) {
         ArrowRight: [0, 1] as [0, 1],
       }[key];
       const [nextI, nextJ] = getNextSquare(state.clues, [i, j], shift);
-      const acrossActive = getAcrossActive(state.clues, nextI, nextJ);
-      const downActive = getDownActive(state.clues, nextI, nextJ);
+      const acrossCursor = getAcrossCursor(state.clues, nextI, nextJ);
+      const downCursor = getDownCursor(state.clues, nextI, nextJ);
       return {
-        active:
-          state.active.direction === 'across'
-            ? acrossActive || downActive
-            : downActive || acrossActive,
+        cursor:
+          state.cursor.direction === 'across'
+            ? acrossCursor || downCursor
+            : downCursor || acrossCursor,
       };
     }
   }
-  return { active: state.active };
+  return { cursor: state.cursor };
 }
 
 export default (state: State, action: UIAction): PlayerAction | null => {

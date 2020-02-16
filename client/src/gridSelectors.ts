@@ -1,5 +1,5 @@
 import memoizeOne from 'memoize-one';
-import { Active, CluesData } from './shared/types';
+import { Cursor, CluesData } from './shared/types';
 import { Square } from './types';
 
 export const getLayout = memoizeOne(
@@ -29,9 +29,9 @@ export const getLayout = memoizeOne(
   },
 );
 
-export function getActiveSquare(clues: CluesData, active: Active): Square {
-  if (!active) return [-1, -1];
-  const { clueNumber, char, direction } = active;
+export function getCursorSquare(clues: CluesData, cursor: Cursor): Square {
+  if (!cursor) return [-1, -1];
+  const { clueNumber, char, direction } = cursor;
   const clue = clues[direction].byNumber[clueNumber];
   if (!clue) return [-1, -1];
   const { row, col } = clue;
