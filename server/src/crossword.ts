@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import uuidv4 from 'uuid/v4';
 
 import { CluesData, State, PlayerAction } from './shared/types';
 import { effectReducer } from './shared/reducer';
@@ -21,10 +22,27 @@ const clues: CluesData = {
   },
 };
 
+const colors = [
+  '#DE7871',
+  '#45F5E4',
+  '#6945FF',
+  '#F5BA45',
+  '#FF44C0',
+  '#FF5964',
+  '#6BF178',
+  '#35A7FF',
+  '#512500',
+  '#7D1D3F',
+  '#827191',
+  '#84ACCE',
+  '#D7D9B1',
+  '#DB3BB4',
+];
+
 export default function setupCrossword(io: SocketIO.Server): void {
   // TODO put this in Redis or something else instead of local state.
   let gameState: State = {
-    cursor: null,
+    cursors: {},
     clues,
     letters: _.range(clues.height).map(() =>
       _.range(clues.height).map(() => ''),
@@ -32,11 +50,12 @@ export default function setupCrossword(io: SocketIO.Server): void {
   };
 
   io.on('connection', socket => {
-    console.log('a socket connected');
-    socket.emit('serverState', gameState);
+    const playerId = uuidv4();
+    console.log('Assigned ID: ', playerId);
+    socket.emit('initialData', gameState, playerId);
 
     socket.on('disconnect', () => {
-      console.log('the socket disconnected');
+      console.log('Socket disconnected:', playerId);
     });
 
     socket.on('playerAction', (playerAction: PlayerAction) => {

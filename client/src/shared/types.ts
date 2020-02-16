@@ -48,6 +48,11 @@ export type PlayerAction = {
   type: 'PLAYER_ACTION';
 
   /**
+   * The UUID of the player making the move.
+   */
+  playerId: string;
+
+  /**
    * The new location of the user's cursor.
    */
   cursor: Cursor;
@@ -60,14 +65,16 @@ export type PlayerAction = {
 
 export type EffectAction =
   | PlayerAction
-  | ({ type: 'SET_INITIAL_STATE' } & State)
+  | { type: 'SET_INITIAL_STATE'; initialState: State }
   | { type: 'RECONNECTING' };
 
 export type State = {
   /**
-   * The position of the current user's cursor within the board.
+   * The position of the connected users' cursors within the board.
    */
-  cursor: Cursor;
+  cursors: {
+    [uuid: string]: Cursor;
+  };
 
   /**
    * The 2d array of filled-in letters in the crossword. Blank and out-of-bounds

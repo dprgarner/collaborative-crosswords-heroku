@@ -136,15 +136,17 @@ export function getCursorSquare(clues: CluesData, cursor: Cursor): Square {
   return direction === 'across' ? [row, col + char] : [row + char, col];
 }
 
-function toPlayerAction(state: State, action: UIAction) {
+function toPlayerAction(state: State, action: UIAction, playerId: string) {
   if (!state.clues) return null;
 
   if (action.type === 'BLUR') {
     return { cursor: null };
   }
-  const [i, j] = getCursorSquare(state.clues, state.cursor);
+
+  const cursor = state.cursors[playerId];
+  const [i, j] = getCursorSquare(state.clues, cursor);
   if (action.type === 'CLICK_CELL') {
-    const direction = state.cursor && state.cursor.direction;
+    const direction = cursor && cursor.direction;
     const acrossCursor = getAcrossCursor(state.clues, action.i, action.j);
     const downCursor = getDownCursor(state.clues, action.i, action.j);
     if (action.i === i && action.j === j && direction === 'across') {
@@ -159,21 +161,24 @@ function toPlayerAction(state: State, action: UIAction) {
     };
   }
   if (action.type === 'KEY_PRESS') {
-    if (!state.cursor) return state; // This shouldn't normally happen.
+    if (!cursor) return null; // This shouldn't normally happen.
     const { key, keyCode } = action;
     if (key === 'Escape') {
       return { cursor: null };
     }
     if (key === 'Delete') {
-      return { cursor: state.cursor, setLetter: { i, j, letter: '' } };
-    }
-    if (key === 'Backspace') {
-      const cursor = getLastCursorChar(state.clues, state.cursor);
       return { cursor, setLetter: { i, j, letter: '' } };
     }
+    if (key === 'Backspace') {
+      const newCursor = getLastCursorChar(state.clues, cursor);
+      return { cursor: newCursor, setLetter: { i, j, letter: '' } };
+    }
     if ((keyCode >= 65 && keyCode < 91) || key === ' ') {
-      const cursor = getNextCursorChar(state.clues, state.cursor);
-      return { cursor, setLetter: { i, j, letter: key.toUpperCase() } };
+      const newCursor = getNextCursorChar(state.clues, cursor);
+      return {
+        cursor: newCursor,
+        setLetter: { i, j, letter: key.toUpperCase() },
+      };
     }
 
     if (
@@ -193,16 +198,20 @@ function toPlayerAction(state: State, action: UIAction) {
       const downCursor = getDownCursor(state.clues, nextI, nextJ);
       return {
         cursor:
-          state.cursor.direction === 'across'
+          cursor.direction === 'across'
             ? acrossCursor || downCursor
             : downCursor || acrossCursor,
       };
     }
   }
-  return { cursor: state.cursor };
+  return { cursor };
 }
 
-export default (state: State, action: UIAction): PlayerAction | null => {
-  const typedAction = toPlayerAction(state, action);
-  return typedAction && { ...typedAction, type: 'PLAYER_ACTION' };
+export default (
+  state: State,
+  action: UIAction,
+  playerId: string,
+): PlayerAction | null => {
+  const typedAction = toPlayerAction(state, action, playerId);
+  return typedAction && { ...typedAction, type: 'PLAYER_ACTION', playerId };
 };
