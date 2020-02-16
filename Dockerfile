@@ -7,9 +7,9 @@ COPY ./client/ ./
 
 FROM node:12-stretch-slim AS server-base
 WORKDIR /app
-COPY ./package.json ./yarn.lock ./tsconfig.json .eslintrc.yml ./
+COPY ./server/package.json ./server/yarn.lock ./server/tsconfig.json ./server/.eslintrc.yml ./
 RUN yarn
-COPY ./src ./src
+COPY ./server/src ./src
 COPY ./client/src/shared ./src/shared
 
 
@@ -24,7 +24,7 @@ RUN yarn tsc
 FROM node:12-stretch-slim AS production
 ENV NODE_ENV=production
 WORKDIR /app
-COPY ./package.json ./yarn.lock ./
+COPY ./server/package.json ./server/yarn.lock ./
 RUN yarn --production
 COPY --from=client-build /app/build /app/client/build
 COPY --from=server-build /app/dist /app/dist

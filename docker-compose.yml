@@ -9,7 +9,7 @@ services:
     ports:
       - 4000:4000
     volumes:
-      - ./src:/app/src
+      - ./server/src:/app/src
       - ./client/src/shared:/app/src/shared
 
   client:
