@@ -7,7 +7,7 @@ import Clues from './Clues';
 import Grid from './Grid';
 import { UIAction } from './types';
 import toPlayerAction from './toPlayerAction';
-import { getLayout, getCursorSquare } from './gridSelectors';
+import { getLayout } from './gridSelectors';
 import { effectReducer } from './shared/reducer';
 import { State, PlayerAction } from './shared/types';
 
@@ -49,13 +49,13 @@ export default function App() {
   };
 
   const layout = getLayout(clues);
-  const cursorSquare = getCursorSquare(clues, cursor);
 
   return (
     <div className="Crossword">
       <div className="GridPanel">
         <Grid
-          cursorSquare={cursorSquare}
+          clues={clues}
+          cursor={cursor}
           layout={layout}
           letters={letters}
           dispatch={uiDispatch}

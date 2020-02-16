@@ -1,23 +1,27 @@
 import * as React from 'react';
 import classNames from 'classnames';
-import * as _ from 'lodash';
-import { Square, UIAction } from './types';
+import _ from 'lodash';
+
+import { UIAction } from './types';
+import { CluesData, Cursor } from './shared/types';
+import { getCursorSquares } from './gridSelectors';
 
 type GridProps = {
   layout: (number | boolean)[][];
   letters: string[][];
   dispatch: React.Dispatch<UIAction>;
-  cursorSquare: Square;
+  clues: CluesData;
+  cursor: Cursor;
 };
 
-const Grid = ({ layout, letters, dispatch, cursorSquare }: GridProps) => {
+const Grid = ({ layout, letters, dispatch, clues, cursor }: GridProps) => {
+  const cursorSquares = getCursorSquares(clues, cursor);
   const containerRef = React.useRef<HTMLTableElement>(null);
   React.useEffect(() => {
-    const [i, j] = cursorSquare;
-    if (i === -1 && j === -1 && containerRef.current) {
+    if (!cursorSquares && containerRef.current) {
       containerRef.current.blur();
     }
-  }, [cursorSquare]);
+  }, [cursorSquares]);
 
   return (
     <table
@@ -49,12 +53,7 @@ const Grid = ({ layout, letters, dispatch, cursorSquare }: GridProps) => {
 
                 {col && (
                   <span
-                    className={classNames(
-                      'GridLetter',
-                      i === cursorSquare[0] &&
-                        j === cursorSquare[1] &&
-                        'cursor',
-                    )}
+                    className={classNames('GridLetter', cursorSquares[i][j])}
                   >
                     {letters[i][j]}
                   </span>

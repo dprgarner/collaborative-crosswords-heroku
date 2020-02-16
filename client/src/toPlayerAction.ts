@@ -1,6 +1,6 @@
 import { Square, UIAction } from './types';
 import { Cursor, CluesData, PlayerAction, State } from './shared/types';
-import { getLayout, getCursorSquare } from './gridSelectors';
+import { getLayout } from './gridSelectors';
 
 function getAcrossCursor(clues: CluesData, i: number, j: number): Cursor {
   for (const clueNumber of clues.across.order) {
@@ -125,6 +125,15 @@ function getNextSquare(
     }
   }
   return [nextI, nextJ];
+}
+
+export function getCursorSquare(clues: CluesData, cursor: Cursor): Square {
+  if (!cursor) return [-1, -1];
+  const { clueNumber, char, direction } = cursor;
+  const clue = clues[direction].byNumber[clueNumber];
+  if (!clue) return [-1, -1];
+  const { row, col } = clue;
+  return direction === 'across' ? [row, col + char] : [row + char, col];
 }
 
 function toPlayerAction(state: State, action: UIAction) {

@@ -1,6 +1,6 @@
+import _ from 'lodash';
 import memoizeOne from 'memoize-one';
 import { Cursor, CluesData } from './shared/types';
-import { Square } from './types';
 
 export const getLayout = memoizeOne(
   ({ width, height, across, down }: CluesData): (number | boolean)[][] => {
@@ -29,11 +29,30 @@ export const getLayout = memoizeOne(
   },
 );
 
-export function getCursorSquare(clues: CluesData, cursor: Cursor): Square {
-  if (!cursor) return [-1, -1];
+type CursorStyle = null | 'cursorClue' | 'cursorSquare';
+
+export function getCursorSquares(
+  clues: CluesData,
+  cursor: Cursor,
+): CursorStyle[][] {
+  const squares: CursorStyle[][] = _.range(clues.height).map(() =>
+    _.range(clues.width).map(() => null),
+  );
+  if (!cursor) return squares;
   const { clueNumber, char, direction } = cursor;
   const clue = clues[direction].byNumber[clueNumber];
-  if (!clue) return [-1, -1];
-  const { row, col } = clue;
-  return direction === 'across' ? [row, col + char] : [row + char, col];
+  if (!clue) return squares;
+  const { row, col, size } = clue;
+  if (direction === 'across') {
+    for (let j = col; j < col + size; j++) {
+      squares[row][j] = 'cursorClue';
+    }
+    squares[row][col + char] = 'cursorSquare';
+  } else {
+    for (let i = row; i < row + size; i++) {
+      squares[i][col] = 'cursorClue';
+    }
+    squares[row + char][col] = 'cursorSquare';
+  }
+  return squares;
 }

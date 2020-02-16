@@ -52,9 +52,13 @@
   padding: 2px;
 }
 
-.GridLetter.cursor {
+.GridLetter.cursorSquare {
+  background-color: rgba(255, 0, 0, 0.3);
   outline: 3px solid red;
   z-index: 1;
+}
+.GridLetter.cursorClue {
+  background-color: rgba(255, 0, 0, 0.3);
 }
 
 .Clues {
