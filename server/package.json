@@ -7,7 +7,7 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "start": "nodemon -w src/ -w client/src/shared -i src/shared -e ts -x \"tsc && node ./dist/src/app.js\"",
+    "start": "nodemon -w src/ -e ts -x \"tsc && node ./dist/src/app.js\"",
     "lint": "eslint src/*.ts src/**/*.ts"
   },
   "devDependencies": {
