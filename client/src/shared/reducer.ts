@@ -3,8 +3,8 @@ import { EffectAction, State } from './types';
 export function effectReducer(state: State, action: EffectAction): State {
   if (!action) return state;
 
-  if (action.type === 'SET_INITIAL_STATE') {
-    const { initialState } = action;
+  if (action.type === 'SET_INITIAL_DATA') {
+    const { state: initialState } = action;
     return initialState;
   }
   if (action.type === 'RECONNECTING') {
@@ -27,6 +27,12 @@ export function effectReducer(state: State, action: EffectAction): State {
       delete cursors[playerId];
     }
     return { ...state, cursors, letters };
+  }
+  if (action.type === 'PLAYER_DISCONNECTED') {
+    const { playerId } = action;
+    const cursors = { ...state.cursors };
+    delete cursors[playerId];
+    return { ...state, cursors };
   }
   return state;
 }

@@ -65,8 +65,9 @@ export type PlayerAction = {
 
 export type EffectAction =
   | PlayerAction
-  | { type: 'SET_INITIAL_STATE'; initialState: State }
-  | { type: 'RECONNECTING' };
+  | { type: 'SET_INITIAL_DATA'; state: State; playerId: string }
+  | { type: 'RECONNECTING' }
+  | { type: 'PLAYER_DISCONNECTED'; playerId: string };
 
 export type State = {
   /**

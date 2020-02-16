@@ -9,7 +9,7 @@ import { UIAction } from './types';
 import toPlayerAction from './toPlayerAction';
 import { getLayout } from './gridSelectors';
 import { effectReducer } from './shared/reducer';
-import { State, PlayerAction } from './shared/types';
+import { EffectAction } from './shared/types';
 
 export default function App() {
   const [state, dispatch] = React.useReducer(effectReducer, {
@@ -23,15 +23,14 @@ export default function App() {
   React.useEffect(() => {
     socketRef.current = io.connect();
     const socket = socketRef.current;
-    socket.on('initialData', (initialState: State, newPlayerId: string) => {
-      dispatch({ type: 'SET_INITIAL_STATE', initialState });
-      setPlayerId(newPlayerId);
-    });
     socket.on('disconnect', () => {
       dispatch({ type: 'RECONNECTING' });
     });
-    socket.on('playerAction', (playerAction: PlayerAction) => {
-      dispatch(playerAction);
+    socket.on('effectAction', (effectAction: EffectAction) => {
+      dispatch(effectAction);
+      if (effectAction.type === 'SET_INITIAL_DATA') {
+        setPlayerId(effectAction.playerId);
+      }
     });
     return () => {
       socket.close();
