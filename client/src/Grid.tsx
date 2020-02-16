@@ -28,7 +28,9 @@ const Grid = ({ layout, letters, dispatch, activeSquare }: GridProps) => {
         dispatch({ type: 'BLUR' });
       }}
       onKeyDown={e => {
-        dispatch({ type: 'KEY_PRESS', keyCode: e.keyCode, key: e.key });
+        if (!e.ctrlKey) {
+          dispatch({ type: 'KEY_PRESS', keyCode: e.keyCode, key: e.key });
+        }
       }}
     >
       <tbody>

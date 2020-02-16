@@ -23,12 +23,15 @@ export type Active = {
   direction: 'across' | 'down';
 } | null;
 
-export type CurrentPlayerAction = {
+/**
+ * An action describing how a player has changed the state of their cursor and
+ * the board from the perpective of the server and any other players.
+ */
+export type PlayerAction = {
+  type: 'PLAYER_ACTION';
   active: Active;
   setLetter?: { i: number; j: number; letter: string };
 };
-
-export type PlayerAction = { type: 'PLAYER_ACTION' } & CurrentPlayerAction;
 
 export type EffectAction =
   | PlayerAction

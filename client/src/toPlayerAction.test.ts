@@ -3,11 +3,11 @@ import _ from 'lodash';
 import { UIAction } from './types';
 import { State } from './shared/types';
 import { CluesData, Active } from './shared/types';
-import toUIAction from './toUIAction';
+import toPlayerAction from './toPlayerAction';
 import { effectReducer } from './shared/reducer';
 
 const reducer = (state: State, action: UIAction) => {
-  const effectAction = toUIAction(state, action);
+  const effectAction = toPlayerAction(state, action);
   return effectAction
     ? effectReducer(state, { type: 'PLAYER_ACTION', ...effectAction })
     : state;

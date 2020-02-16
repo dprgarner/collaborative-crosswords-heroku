@@ -1,5 +1,5 @@
 import { Square, UIAction } from './types';
-import { Active, CluesData, CurrentPlayerAction, State } from './shared/types';
+import { Active, CluesData, PlayerAction, State } from './shared/types';
 import { getLayout, getActiveSquare } from './gridSelectors';
 
 function getAcrossActive(clues: CluesData, i: number, j: number): Active {
@@ -127,10 +127,7 @@ function getNextSquare(
   return [nextI, nextJ];
 }
 
-export default function toUIAction(
-  state: State,
-  action: UIAction,
-): CurrentPlayerAction | null {
+function toPlayerAction(state: State, action: UIAction) {
   if (!state.clues) return null;
 
   if (action.type === 'BLUR') {
@@ -195,3 +192,8 @@ export default function toUIAction(
   }
   return { active: state.active };
 }
+
+export default (state: State, action: UIAction): PlayerAction | null => {
+  const typedAction = toPlayerAction(state, action);
+  return typedAction && { ...typedAction, type: 'PLAYER_ACTION' };
+};

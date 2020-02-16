@@ -6,7 +6,7 @@ import './App.css';
 import Clues from './Clues';
 import Grid from './Grid';
 import { UIAction } from './types';
-import toUIAction from './toUIAction';
+import toPlayerAction from './toUIAction';
 import { getLayout, getActiveSquare } from './gridSelectors';
 import { effectReducer } from './shared/reducer';
 import { State, PlayerAction } from './shared/types';
@@ -41,12 +41,8 @@ export default function App() {
 
   const uiDispatch = (uiAction: UIAction) => {
     const socket = socketRef.current;
-    const currentPlayerAction = toUIAction(state, uiAction);
-    if (currentPlayerAction && socket) {
-      const playerAction: PlayerAction = {
-        type: 'PLAYER_ACTION',
-        ...currentPlayerAction,
-      };
+    const playerAction = toPlayerAction(state, uiAction);
+    if (playerAction && socket) {
       socket.emit('playerAction', playerAction);
       dispatch(playerAction);
     }
