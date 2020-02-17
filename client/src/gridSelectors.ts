@@ -29,30 +29,47 @@ export const getLayout = memoizeOne(
   },
 );
 
-type CursorStyle = null | 'cursorClue' | 'cursorSquare';
+type CursorStyle = null | 'myClue' | 'mySquare' | 'otherClue' | 'otherSquare';
 
 export function getCursorSquares(
   clues: CluesData,
-  cursor: Cursor,
+  cursors: { [uuid: string]: Cursor },
+  playerId: string,
 ): CursorStyle[][] {
   const squares: CursorStyle[][] = _.range(clues.height).map(() =>
     _.range(clues.width).map(() => null),
   );
-  if (!cursor) return squares;
-  const { clueNumber, char, direction } = cursor;
-  const clue = clues[direction].byNumber[clueNumber];
-  if (!clue) return squares;
-  const { row, col, size } = clue;
-  if (direction === 'across') {
-    for (let j = col; j < col + size; j++) {
-      squares[row][j] = 'cursorClue';
+
+  _.each(cursors, (cursor, uuid) => {
+    const myCursor = uuid === playerId;
+
+    function setSquare(i: number, j: number, type: 'clue' | 'square') {
+      if (squares[i][j] === 'mySquare' && !myCursor) return;
+      if (squares[i][j] === 'myClue' && !myCursor) return;
+
+      if (type === 'clue') {
+        squares[i][j] = myCursor ? 'myClue' : 'otherClue';
+      } else if (type === 'square') {
+        squares[i][j] = myCursor ? 'mySquare' : 'otherSquare';
+      }
     }
-    squares[row][col + char] = 'cursorSquare';
-  } else {
-    for (let i = row; i < row + size; i++) {
-      squares[i][col] = 'cursorClue';
+
+    if (!cursor) return;
+    const { clueNumber, char, direction } = cursor;
+    const clue = clues[direction].byNumber[clueNumber];
+    if (!clue) return;
+    const { row, col, size } = clue;
+    if (direction === 'across') {
+      for (let j = col; j < col + size; j++) {
+        setSquare(row, j, 'clue');
+      }
+      setSquare(row, col + char, 'square');
+    } else {
+      for (let i = row; i < row + size; i++) {
+        setSquare(i, col, 'clue');
+      }
+      setSquare(row + char, col, 'square');
     }
-    squares[row + char][col] = 'cursorSquare';
-  }
+  });
   return squares;
 }

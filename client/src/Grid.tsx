@@ -11,11 +11,21 @@ type GridProps = {
   letters: string[][];
   dispatch: React.Dispatch<UIAction>;
   clues: CluesData;
-  cursor: Cursor;
+  cursors: {
+    [uuid: string]: Cursor;
+  };
+  playerId: string;
 };
 
-const Grid = ({ layout, letters, dispatch, clues, cursor }: GridProps) => {
-  const cursorSquares = getCursorSquares(clues, cursor);
+const Grid = ({
+  layout,
+  letters,
+  dispatch,
+  clues,
+  cursors,
+  playerId,
+}: GridProps) => {
+  const cursorSquares = getCursorSquares(clues, cursors, playerId);
   const containerRef = React.useRef<HTMLTableElement>(null);
   React.useEffect(() => {
     if (!cursorSquares && containerRef.current) {

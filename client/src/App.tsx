@@ -37,9 +37,10 @@ export default function App() {
     };
   }, []);
 
-  const { letters, clues } = state;
-  if (!clues) return <h1 style={{ height: '100vh' }}>Loading...</h1>;
-  const cursor = playerId ? state.cursors[playerId] : null;
+  const { letters, clues, cursors } = state;
+  if (!clues || !playerId) {
+    return <h1 style={{ height: '100vh' }}>Loading...</h1>;
+  }
 
   const uiDispatch = (uiAction: UIAction) => {
     const socket = socketRef.current;
@@ -59,7 +60,8 @@ export default function App() {
         <div>{playerId}</div>
         <Grid
           clues={clues}
-          cursor={cursor}
+          cursors={cursors}
+          playerId={playerId}
           layout={layout}
           letters={letters}
           dispatch={uiDispatch}
