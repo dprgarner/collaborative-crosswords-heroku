@@ -10,14 +10,32 @@ const clues: CluesData = {
   across: {
     order: [1, 2],
     byNumber: {
-      1: { clue: 'The sound a doggy makes', size: 4, row: 0, col: 0 },
-      2: { clue: 'You do this to a door', size: 4, row: 2, col: 0 },
+      1: {
+        clue: 'The sound a doggy makes',
+        size: 4,
+        row: 0,
+        col: 0,
+        wordArrangement: '4',
+      },
+      2: {
+        clue: 'You do this to a door',
+        size: 4,
+        row: 2,
+        col: 0,
+        wordArrangement: '4',
+      },
     },
   },
   down: {
     order: [1],
     byNumber: {
-      1: { clue: 'Lots of trees', size: 4, row: 0, col: 0 },
+      1: {
+        clue: 'Lots of trees',
+        size: 4,
+        row: 0,
+        col: 0,
+        wordArrangement: '2,2',
+      },
     },
   },
 };

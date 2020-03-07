@@ -5,11 +5,11 @@ import { ClueSetData } from './shared/types';
 type ClueProps = {
   number: number;
   clue: string;
-  size: number;
+  wordArrangement: string;
 };
 
-const Clue = ({ number, clue, size }: ClueProps) => (
-  <div>{`${number}: ${clue} (${size})`}</div>
+const Clue = ({ number, clue, wordArrangement }: ClueProps) => (
+  <div>{`${number}: ${clue} (${wordArrangement})`}</div>
 );
 
 type CluesProps = {
@@ -22,14 +22,28 @@ const Clues = ({ across, down }: CluesProps) => {
     <div className="Clues">
       <h2>Across</h2>
       {across.order.map(number => {
-        const { clue, size } = across.byNumber[number];
-        return <Clue key={number} number={number} clue={clue} size={size} />;
+        const { clue, wordArrangement } = across.byNumber[number];
+        return (
+          <Clue
+            key={number}
+            number={number}
+            clue={clue}
+            wordArrangement={wordArrangement}
+          />
+        );
       })}
 
       <h2>Down</h2>
       {down.order.map(number => {
-        const { clue, size } = down.byNumber[number];
-        return <Clue key={number} number={number} clue={clue} size={size} />;
+        const { clue, wordArrangement } = down.byNumber[number];
+        return (
+          <Clue
+            key={number}
+            number={number}
+            clue={clue}
+            wordArrangement={wordArrangement}
+          />
+        );
       })}
     </div>
   );

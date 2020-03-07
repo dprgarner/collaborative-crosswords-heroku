@@ -50,3 +50,5 @@ The `production` image specified in the Dockerfile is run in production on Herok
 - Write a better crossword
 - Store the state outside of the Node process when in production (Redis?)
 - Add many crosswords.
+- Make it pretty.
+- Allow split words (good luck with that one)

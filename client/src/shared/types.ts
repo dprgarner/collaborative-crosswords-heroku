@@ -2,8 +2,21 @@ export type ClueSetData = {
   order: number[];
   byNumber: {
     [number: string]: {
+      /**
+       * The text for the crossword clue.
+       */
       clue: string;
+
+      /**
+       * The number of letters in the clue.
+       */
       size: number;
+
+      /**
+       * The arrangement of the words in the clue. In most cases, this is the string version of the clue size.
+       */
+      wordArrangement: string;
+
       row: number;
       col: number;
     };
