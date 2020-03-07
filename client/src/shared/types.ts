@@ -19,7 +19,8 @@ export type CluesData = {
 
 /**
  * A representation of the user's focus within the grid. All modifications to
- * the grid's letters are performed by modifying a letter at a time, and most result in the cursor being moved.
+ * the grid's letters are performed by modifying a letter at a time, and most
+ * result in the cursor being moved.
  */
 export type Cursor = {
   /**
@@ -61,13 +62,16 @@ export type PlayerAction = {
    * Any modifications to entered letters in the grid.
    */
   setLetter?: { i: number; j: number; letter: string };
+
+  reset?: true;
 };
 
 export type EffectAction =
   | PlayerAction
   | { type: 'SET_INITIAL_DATA'; state: State; playerId: string }
   | { type: 'RECONNECTING' }
-  | { type: 'PLAYER_DISCONNECTED'; playerId: string };
+  | { type: 'PLAYER_DISCONNECTED'; playerId: string }
+  | { type: 'COMPLETED' };
 
 export type State = {
   /**
@@ -87,4 +91,10 @@ export type State = {
    * The clues of the current crossword.
    */
   clues: CluesData | null;
+
+  /**
+   * Is the crossword completed or not. The client cannot derive this, as the
+   * answers are not stored client-side.
+   */
+  isComplete: boolean;
 };

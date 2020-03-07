@@ -16,6 +16,7 @@ export default function App() {
     cursors: {},
     letters: [],
     clues: null,
+    isComplete: false,
   });
   const [playerId, setPlayerId] = React.useState<string | null>(null);
 
@@ -37,7 +38,7 @@ export default function App() {
     };
   }, []);
 
-  const { letters, clues, cursors } = state;
+  const { letters, clues, cursors, isComplete } = state;
   if (!clues || !playerId) {
     return <h1 style={{ height: '100vh' }}>Loading...</h1>;
   }
@@ -58,6 +59,7 @@ export default function App() {
     <div className="Crossword">
       <div className="GridPanel">
         <div>{playerId}</div>
+        {isComplete ? '🎉🎉🎉' : null}
         <Grid
           clues={clues}
           cursors={cursors}
@@ -66,6 +68,14 @@ export default function App() {
           letters={letters}
           dispatch={uiDispatch}
         />
+        {isComplete ? (
+          <>
+            {'🎉🎉🎉'}
+            <button onClick={() => uiDispatch({ type: 'RESET' })}>
+              Reset Board
+            </button>
+          </>
+        ) : null}
       </div>
       <div>
         <Clues across={clues.across} down={clues.down} />

@@ -1,8 +1,8 @@
 import _ from 'lodash';
 import uuidv4 from 'uuid/v4';
 
-import { CluesData, State, PlayerAction, EffectAction } from './shared/types';
-import { effectReducer } from './shared/reducer';
+import { CluesData, PlayerAction, EffectAction } from './shared/types';
+import { createInitialState, effectReducer } from './shared/reducer';
 
 const clues: CluesData = {
   width: 4,
@@ -22,15 +22,24 @@ const clues: CluesData = {
   },
 };
 
+const answers: string[][] = [
+  ['W', 'O', 'O', 'F'],
+  ['O', '', '', ''],
+  ['O', 'P', 'E', 'N'],
+  ['D', '', '', ''],
+];
+
 export default function setupCrossword(io: SocketIO.Server): void {
   // TODO put this in Redis or something else instead of local state.
-  let gameState: State = {
-    cursors: {},
-    clues,
-    letters: _.range(clues.height).map(() =>
-      _.range(clues.height).map(() => ''),
-    ),
-  };
+  let gameState = createInitialState(clues);
+
+  setInterval(() => {
+    if (!gameState.isComplete && _.isEqual(gameState.letters, answers)) {
+      const completeAction = { type: 'COMPLETED' } as EffectAction;
+      io.emit('effectAction', completeAction);
+      gameState = effectReducer(gameState, completeAction);
+    }
+  }, 1000);
 
   io.on('connection', socket => {
     const playerId = uuidv4();

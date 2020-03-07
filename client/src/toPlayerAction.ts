@@ -139,6 +139,12 @@ export function getCursorSquare(clues: CluesData, cursor: Cursor): Square {
 function toPlayerAction(state: State, action: UIAction, playerId: string) {
   if (!state.clues) return null;
 
+  if (state.isComplete) {
+    return action.type === 'RESET'
+      ? ({ cursor: null, reset: true } as { cursor: null; reset: true })
+      : null;
+  }
+
   if (action.type === 'BLUR') {
     return { cursor: null };
   }

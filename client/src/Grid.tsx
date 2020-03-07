@@ -44,6 +44,7 @@ const Grid = ({
       onKeyDown={e => {
         if (!e.ctrlKey) {
           dispatch({ type: 'KEY_PRESS', keyCode: e.keyCode, key: e.key });
+          e.preventDefault();
         }
       }}
     >

@@ -46,7 +46,6 @@ The `production` image specified in the Dockerfile is run in production on Herok
 
 ## TODO
 
-- Event when user completes the crossword, and action to reset
 - Store crosswords in Yaml
 - Write a better crossword
 - Store the state outside of the Node process when in production (Redis?)
