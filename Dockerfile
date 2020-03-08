@@ -9,6 +9,7 @@ FROM node:12-stretch-slim AS server-base
 WORKDIR /app
 COPY ./server/package.json ./server/yarn.lock ./server/tsconfig.json ./server/.eslintrc.yml ./
 RUN yarn
+COPY ./server/data ./data
 COPY ./server/src ./src
 COPY ./client/src/shared ./src/shared
 

@@ -20,6 +20,7 @@ services:
     ports:
       - 4000:4000
     volumes:
-      - ./server/package.json:/app/package.json
       - ./client/src/shared:/app/src/shared
+      - ./server/package.json:/app/package.json
       - ./server/src:/app/src
+      - ./server/data:/app/data
