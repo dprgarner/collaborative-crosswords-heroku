@@ -10,10 +10,7 @@ import loadCrossword from './loadCrossword';
 export default function setupCrossword(io: SocketIO.Server): void {
   // TODO put this in Redis or something else instead of local state.
   const { clues, answers } = loadCrossword(
-    fs.readFileSync(
-      path.join(__dirname, '..', '..', 'data', 'crossword.yml'),
-      'utf8',
-    ),
+    fs.readFileSync(path.join(__dirname, 'data', 'crossword.yml'), 'utf8'),
   );
   let gameState = createInitialState(clues);
 

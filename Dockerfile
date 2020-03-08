@@ -7,9 +7,13 @@ COPY ./client/ ./
 
 FROM node:12-stretch-slim AS server-base
 WORKDIR /app
-COPY ./server/package.json ./server/yarn.lock ./server/tsconfig.json ./server/.eslintrc.yml ./
+COPY ./server/package.json \
+    ./server/yarn.lock \
+    ./server/tsconfig.json \
+    ./server/jest.config.js \
+    ./server/.eslintrc.yml \
+    ./
 RUN yarn
-COPY ./server/data ./data
 COPY ./server/src ./src
 COPY ./client/src/shared ./src/shared
 
@@ -19,7 +23,7 @@ RUN yarn build
 
 
 FROM server-base AS server-build
-RUN yarn tsc
+RUN yarn build
 
 
 FROM node:12-stretch-slim AS production

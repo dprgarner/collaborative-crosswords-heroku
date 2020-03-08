@@ -10,6 +10,25 @@ The Client side is built with [create-react-app](https://create-react-app.dev/) 
 
 The server and client code have independent `package.json` and `tsconfig.json` config files, but share the code in `./client/src/shared`. This directory is copied to `./server/src/shared` in the server source code directory at server build time (there were issues with Webpack and CRA when I tried to use a symlink).
 
+The source of the crossword is specified in `./server/src/data/crossword.yml`.
+Clues are separated into `across` and `down` objects, and each clue is indexed under a `(row,col)` key in a `[clue, answer]` tuple. For example:
+
+```yaml
+across:
+  0,2:
+    - This is the clue
+    - Wow
+  2,0:
+    - Another clue
+    - Woah
+down:
+  0,3:
+    - An impressive clue
+    - Ooh
+```
+
+The parser will calculate the number of letters hints, and supports multiple word and hyphenated clues. The parser will throw a `ValidationError` on starting the server if the format does not match the expected format or if the clues are inconsistent.
+
 ## Developing
 
 ## Getting started
@@ -20,12 +39,16 @@ Docker will create the `node_modules` directories in the built images, which won
 
 ### Testing
 
-No server-side tests yet. :(
-
 To run the client-side tests:
 
 ```bash
 > docker-compose run --rm client yarn test
+```
+
+To run the server-side tests:
+
+```bash
+> docker-compose run --rm server yarn test
 ```
 
 ### Linting
@@ -46,9 +69,7 @@ The `production` image specified in the Dockerfile is run in production on Herok
 
 ## TODO
 
-- Store crosswords in Yaml
-- Write a better crossword
 - Store the state outside of the Node process when in production (Redis?)
 - Add many crosswords.
 - Make it pretty.
-- Allow split words (good luck with that one)
+- Allow split words (meh)
