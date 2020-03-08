@@ -1,4 +1,8 @@
-import loadCrossword, { toWordArrangement } from './loadCrossword';
+import loadCrossword, {
+  getClueStartSquares,
+  getClueNumbers,
+  toWordArrangement,
+} from './loadCrossword';
 import { CluesData } from './shared/types';
 
 test('parses an answer to a wordArrangement', () => {
@@ -71,6 +75,161 @@ test('throws when across and down answers do not match', () => {
   expect(() => loadCrossword(exampleYaml)).toThrowError(/Inconsistent Clues/);
 });
 
+test('getClueStartSquares finds the clue starts', () => {
+  expect(
+    getClueStartSquares([
+      ['A', 'B', 'C'],
+      ['A', '', ''],
+      ['A', '', ''],
+    ]),
+  ).toEqual({
+    across: [
+      [true, false, false],
+      [false, false, false],
+      [false, false, false],
+    ],
+    down: [
+      [true, false, false],
+      [false, false, false],
+      [false, false, false],
+    ],
+  });
+
+  expect(
+    getClueStartSquares([
+      ['A', 'B', 'C'],
+      ['', 'B', ''],
+      ['', 'B', ''],
+    ]),
+  ).toEqual({
+    across: [
+      [true, false, false],
+      [false, false, false],
+      [false, false, false],
+    ],
+    down: [
+      [false, true, false],
+      [false, false, false],
+      [false, false, false],
+    ],
+  });
+
+  expect(
+    getClueStartSquares([
+      ['', '', ''],
+      ['', 'B', 'C'],
+      ['', '', ''],
+    ]),
+  ).toEqual({
+    across: [
+      [false, false, false],
+      [false, true, false],
+      [false, false, false],
+    ],
+    down: [
+      [false, false, false],
+      [false, false, false],
+      [false, false, false],
+    ],
+  });
+
+  expect(
+    getClueStartSquares([
+      ['', '', ''],
+      ['', 'B', ''],
+      ['', 'B', ''],
+    ]),
+  ).toEqual({
+    across: [
+      [false, false, false],
+      [false, false, false],
+      [false, false, false],
+    ],
+    down: [
+      [false, false, false],
+      [false, true, false],
+      [false, false, false],
+    ],
+  });
+});
+
+test('getClueStartSquares finds the clue starts in the last row and column', () => {
+  expect(
+    getClueStartSquares([
+      ['', '', 'C'],
+      ['', '', 'C'],
+      ['A', 'B', 'C'],
+    ]),
+  ).toEqual({
+    across: [
+      [false, false, false],
+      [false, false, false],
+      [true, false, false],
+    ],
+    down: [
+      [false, false, true],
+      [false, false, false],
+      [false, false, false],
+    ],
+  });
+});
+
+test('getClueNumbers gets the expected clue numbers', () => {
+  expect(
+    getClueNumbers(
+      getClueStartSquares([
+        ['', 'A', ''],
+        ['A', 'A', ''],
+        ['', 'A', 'A'],
+      ]),
+    ),
+  ).toEqual({
+    across: {
+      '1,0': 2,
+      '2,1': 3,
+    },
+    down: {
+      '0,1': 1,
+    },
+  });
+
+  expect(
+    getClueNumbers(
+      getClueStartSquares([
+        ['', 'A', 'A'],
+        ['', 'A', ''],
+        ['', 'A', 'A'],
+      ]),
+    ),
+  ).toEqual({
+    across: {
+      '0,1': 1,
+      '2,1': 2,
+    },
+    down: {
+      '0,1': 1,
+    },
+  });
+});
+
+test('throws if clues are too close together', () => {
+  const eg1 = `
+    across:
+      0,0:
+        - The sound a doggy makes
+        - Woof
+      1,0:
+        - I am too close; there needs to be more "down" clues
+        - Oops
+    down:
+      0,0:
+        - Much crossword
+        - Wow
+    `;
+  expect(() => loadCrossword(eg1)).toThrowError(/ValidationError/);
+  expect(() => loadCrossword(eg1)).toThrowError(/Missing Clues/);
+});
+
 test('parses YAML to clues and answers', () => {
   const exampleYaml = `
     across:
@@ -112,7 +271,7 @@ test('parses YAML to clues and answers', () => {
       },
     },
     down: {
-      order: [1],
+      order: [1, 3],
       byNumber: {
         1: {
           clue: 'Lots of trees',
@@ -120,6 +279,13 @@ test('parses YAML to clues and answers', () => {
           row: 0,
           col: 0,
           wordArrangement: '2,2',
+        },
+        3: {
+          clue: 'Negative',
+          size: 2,
+          row: 2,
+          col: 3,
+          wordArrangement: '2',
         },
       },
     },
