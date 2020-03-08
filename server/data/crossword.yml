@@ -1,12 +1,75 @@
 across:
-  0,0:
-    - The sound a doggy makes
-    - Woof
+  0,2:
+    - Fussy about just one item?
+    - Particular
   2,0:
-    - You do this to a door
-    - Open
+    - Time of year in which Capri looks its best
+    - April
+  2,6:
+    - Agreeing to a nap?
+    - Nodding
+  4,0:
+    - Hand over a representative
+    - Delegate
+  4,9:
+    - Pole enters by way of a special permit
+    - Visa
+  6,0:
+    - Choice form of potion
+    - Option
+  6,7:
+    - The force of emphasis
+    - Stress
+  8,0:
+    - Unproductive sort of raid
+    - Arid
+  8,5:
+    - Boring task for the affluent
+    - Well-to-do
+  10,0:
+    - Old map I produced for a degree
+    - Diploma
+  10,8:
+    - Turning points in revolutions
+    - Axles
+  12,1:
+    - They should recognise a golden opportunities when they see one
+    - Prospector
 
 down:
-  0,0:
-    - Lots of trees
-    - Wo Od
+  0,2:
+    - I get a number to follow through danger
+    - Peril
+  0,4:
+    - One girl I converted to the faith
+    - Religion
+  0,6:
+    - Hotel having tea break is natural
+    - Innate
+  0,8:
+    - Free from any sound of disturbance
+    - Undo
+  0,10:
+    - Inane is another way of putting this
+    - Asinine
+  1,0:
+    - This fight will be very close
+    - Hand-to-hand
+  2,12:
+    - Where they tray to force soldiers to be good?
+    - Glasshouse
+  5,8:
+    - Stout fellow broke the law in the beginning
+    - Stalwart
+  6,2:
+    - Accident-prone excursionist?
+    - Tripper
+  7,6:
+    - A household word in France
+    - Menage
+  8,10:
+    - Vessel carrying fuel from Loire
+    - Oiler
+  9,4:
+    - Plenty of sites for builders
+    - Lots
