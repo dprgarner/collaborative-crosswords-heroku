@@ -1,23 +1,28 @@
 import * as React from 'react';
+import classNames from 'classnames';
 
-import { ClueSetData } from './shared/types';
+import { ClueSetData, Cursor } from './shared/types';
 
 type ClueProps = {
   number: number;
   clue: string;
   wordArrangement: string;
+  isActive: boolean;
 };
 
-const Clue = ({ number, clue, wordArrangement }: ClueProps) => (
-  <div>{`${number}: ${clue} (${wordArrangement})`}</div>
+const Clue = ({ number, clue, wordArrangement, isActive }: ClueProps) => (
+  <div className={classNames('Clue', isActive && 'isActive')}>
+    {`${number}: ${clue} (${wordArrangement})`}
+  </div>
 );
 
 type CluesProps = {
   across: ClueSetData;
   down: ClueSetData;
+  playerCursor: Cursor;
 };
 
-const Clues = ({ across, down }: CluesProps) => {
+const Clues = ({ across, down, playerCursor }: CluesProps) => {
   return (
     <div className="Clues">
       <h2>Across</h2>
@@ -29,6 +34,10 @@ const Clues = ({ across, down }: CluesProps) => {
             number={number}
             clue={clue}
             wordArrangement={wordArrangement}
+            isActive={
+              playerCursor?.direction === 'across' &&
+              playerCursor.clueNumber === number
+            }
           />
         );
       })}
@@ -42,6 +51,10 @@ const Clues = ({ across, down }: CluesProps) => {
             number={number}
             clue={clue}
             wordArrangement={wordArrangement}
+            isActive={
+              playerCursor?.direction === 'down' &&
+              playerCursor.clueNumber === number
+            }
           />
         );
       })}

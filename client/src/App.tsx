@@ -58,7 +58,6 @@ export default function App() {
   return (
     <div className="Crossword">
       <div className="GridPanel">
-        <div>{playerId}</div>
         {isComplete ? '🎉🎉🎉' : null}
         <Grid
           clues={clues}
@@ -68,17 +67,20 @@ export default function App() {
           letters={letters}
           dispatch={uiDispatch}
         />
-        {isComplete ? (
-          <>
-            {'🎉🎉🎉'}
-            <button onClick={() => uiDispatch({ type: 'RESET' })}>
-              Reset Board
-            </button>
-          </>
-        ) : null}
+        {isComplete ? <>{'🎉🎉🎉'}</> : null}
+        <div style={{ textAlign: 'center' }}>
+          <button onClick={() => uiDispatch({ type: 'RESET' })}>
+            Reset Board
+          </button>
+        </div>
+        <div style={{ position: 'fixed', bottom: 0 }}>{playerId}</div>
       </div>
       <div>
-        <Clues across={clues.across} down={clues.down} />
+        <Clues
+          across={clues.across}
+          down={clues.down}
+          playerCursor={cursors[playerId]}
+        />
       </div>
     </div>
   );
